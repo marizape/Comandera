@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:icon="@drawable/home2"
+        android:id="@+id/opcion3"
+        android:title="home mesero"
+        app:showAsAction="ifRoom" />
+    <item
+        android:icon="@drawable/cerrar1"
+        android:id="@+id/opcion2"
+        android:title="home"
+        app:showAsAction="ifRoom" />
+</menu>
+

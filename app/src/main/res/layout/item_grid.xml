@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+    <LinearLayout android:orientation="vertical" android:gravity="center" android:layout_height="match_parent" android:layout_width="match_parent" xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <ImageView android:layout_height="139dp" android:layout_width="139dp" android:src="@mipmap/ic_launcher" android:id="@+id/imageView2"/>
+
+    <TextView android:gravity="center" android:layout_height="wrap_content" android:layout_width="match_parent" android:id="@+id/ig_tv_titulo"/>
+
+</LinearLayout>
