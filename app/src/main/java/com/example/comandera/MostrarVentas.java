@@ -68,7 +68,7 @@ public class MostrarVentas extends AppCompatActivity implements ProductoAdapter.
         // progressDialog = new ProgressDialog(this);
 
         recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
-        btnMontoTotal = (Button) findViewById(R.id.btnCobrar);
+        btnMontoTotal = (Button) findViewById(R.id.btnCobrar); // boton de cobrar
         agregar = (Button) findViewById(R.id.btnAgregar); //boton de agregar los producto
         cancelar = (Button) findViewById(R.id.btnCancelar); // boton de cancelar lo de los productos
 
@@ -196,9 +196,10 @@ public class MostrarVentas extends AppCompatActivity implements ProductoAdapter.
 
                     Productoss producto = new Productoss(bitmap,nomb,cant,precioUnitario,subTot,presentacion);
                     productos.add(producto);
-                   /* btnMontoTotal.setText("Registrar venta \t\n\t $ " +String.format("%.2f", toTal));
+
+                    btnMontoTotal.setText("Registrar venta \t\n\t $ " +String.format("%.2f", toTal));
                     Globales.getInstance().TotVenta =  toTal;
-                   */
+
                     index++;
                     cursor2.moveToNext();
                 }
@@ -349,9 +350,10 @@ public class MostrarVentas extends AppCompatActivity implements ProductoAdapter.
         SQLiteDatabase db = conn.getReadableDatabase();
         SQLiteDatabase db2 = conn.getWritableDatabase();
 
-        Cursor cursor2 =db.rawQuery("SELECT docd_cantprod, prepro_precompra FROM documento INNER JOIN documento_det ON "+
-                "documento.doc_id = documento_det.doc_fk INNER JOIN producto ON "+
-                "documento_det.prepro_fk =  prest_prod.prepro_id INNER JOIN prest_prod ON prest_prod.prd_fk = producto.prd_id WHERE documento_det.doc_fk ="+Globales.getInstance().idDetalle+" AND documento_det.prepro_fk="+Globales.getInstance().idProducto, null);
+        Cursor cursor2 =db.rawQuery("SELECT ordet_cant, prepro_precompra FROM orden \n" +
+                "INNER JOIN orden_det ON orden.ord_id = orden_det.ord_fk \n" +
+                "INNER JOIN producto ON orden_det.prepro_fk =  prest_prod.prepro_id \n" +
+                "INNER JOIN prest_prod ON prest_prod.prd_fk = producto.prd_id  WHERE orden_det.ord_fk ="+Globales.getInstance().idDetalle+" AND orden_det.prepro_fk="+Globales.getInstance().idProducto, null);
 
         try {
             if (cursor2 != null) {
@@ -360,7 +362,8 @@ public class MostrarVentas extends AppCompatActivity implements ProductoAdapter.
 
                 while (!cursor2.isAfterLast()) {
                     precioUnitario2 = Double.parseDouble(cursor2.getString(cursor2.getColumnIndex("prepro_precompra")));
-                    cant2= cursor2.getInt(cursor2.getColumnIndex("docd_cantprod"));
+                    cant2= cursor2.getInt(cursor2.getColumnIndex("ordet_cant"));
+                    //cant2= cursor2.getInt(cursor2.getColumnIndex("docd_cantprod"));
 
                     index++;
                     cursor2.moveToNext();
@@ -375,7 +378,7 @@ public class MostrarVentas extends AppCompatActivity implements ProductoAdapter.
                 }/*else if(tipo == "cambia"){
                     cantotal = Globales.getInstance().cantiOperacion;
                 }*/else if (tipo == "eliminar"){
-                    Cursor cursorE=db.rawQuery("DELETE FROM documento_det WHERE documento_det.doc_fk ="+Globales.getInstance().idDetalle+" AND documento_det.prepro_fk="+Globales.getInstance().idProducto, null);
+                    Cursor cursorE=db.rawQuery("DELETE FROM orden_det WHERE orden_det.ord_fk ="+Globales.getInstance().idDetalle+" AND orden_det.prepro_fk="+Globales.getInstance().idProducto, null);
                     cursorE.moveToNext();
                     Toast.makeText(MostrarVentas.this, "Producto cancelado...", Toast.LENGTH_SHORT).show();
 
@@ -389,16 +392,19 @@ public class MostrarVentas extends AppCompatActivity implements ProductoAdapter.
 
                 Globales.getInstance().subTotal=toTal2;
 
-                db2.execSQL("UPDATE documento_det SET docd_cantprod = "+cantotal+", docd_precven = "+toTal2+" WHERE doc_fk ="+Globales.getInstance().idDetalle+" AND documento_det.prepro_fk="+Globales.getInstance().idProducto);
+                db2.execSQL("UPDATE orden_det SET ordet_cant = "+cantotal+", ordet_importe = "+toTal2+" WHERE ord_fk ="+Globales.getInstance().idDetalle+" AND orden_det.prepro_fk="+Globales.getInstance().idProducto);
+               // db2.execSQL("UPDATE documento_det SET docd_cantprod = "+cantotal+", docd_precven = "+toTal2+" WHERE doc_fk ="+Globales.getInstance().idDetalle+" AND documento_det.prepro_fk="+Globales.getInstance().idProducto);
 
-                Cursor cursor3 = db.rawQuery("SELECT SUM(docd_precven) as suma FROM documento_det WHERE documento_det.doc_fk ="+Globales.getInstance().idDetalle, null);
+              //  Cursor cursor3 = db.rawQuery("SELECT SUM(docd_precven) as suma FROM documento_det WHERE documento_det.doc_fk ="+Globales.getInstance().idDetalle, null);
+                Cursor cursor3 = db.rawQuery("SELECT SUM(ordet_importe) as suma FROM orden_det WHERE orden_det.ord_fk ="+Globales.getInstance().idDetalle, null);
                 cursor3.moveToFirst();
 
                 TotalVenta = Double.parseDouble(cursor3.getString(cursor3.getColumnIndex("suma")));
                 String v =  String.format("%.2f", TotalVenta);
                 totalCobrar = Double.valueOf(v);
                 btnMontoTotal.setText("Registrar venta \t\n\t $ " + Double.toString(totalCobrar));
-                db2.execSQL("UPDATE documento SET doc_subtotal = "+TotalVenta+", doc_total  = "+TotalVenta+" WHERE doc_id ="+Globales.getInstance().idDetalle);
+              //  db2.execSQL("UPDATE documento SET doc_subtotal = "+TotalVenta+", doc_total  = "+TotalVenta+" WHERE doc_id ="+Globales.getInstance().idDetalle);
+                db2.execSQL("UPDATE orden SET ord_subtotal = "+TotalVenta+", ord_total  = "+TotalVenta+" WHERE ord_id ="+Globales.getInstance().idDetalle);
                 // Restore state
                 //recyclerViewState = recyclerView.getLayoutManager().onSaveInstanceState();
                 consultaSQL2();

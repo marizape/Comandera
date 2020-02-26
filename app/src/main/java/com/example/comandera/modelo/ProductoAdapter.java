@@ -1,5 +1,6 @@
 package com.example.comandera.modelo;
 
+import android.annotation.SuppressLint;
 import android.graphics.Color;
 
 import android.text.Editable;
@@ -16,16 +17,22 @@ import android.widget.TextView;
 
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.comandera.ConfiguracionMesa;
 import com.example.comandera.Globales;
 import com.example.comandera.R;
 
 import java.util.ArrayList;
 
+import static com.example.comandera.R.id.lapizProduct;
+
 public class ProductoAdapter extends RecyclerView.Adapter<ProductoAdapter.PaletteViewHolderVenta>{
     ArrayList<Productoss> productos;
     private MiListener listener;
+
+
 
     public interface MiListener {
         void onItemClick(Productoss productos, EditText cantidadescribir);
@@ -72,8 +79,10 @@ public class ProductoAdapter extends RecyclerView.Adapter<ProductoAdapter.Palett
         ImageButton eliminarP;
         ImageButton aumentarCant;
         ImageButton disminuirCant;
+        ImageButton comentarioCant;
         public TextView presentacionP;
 
+        @SuppressLint("WrongViewCast")
         public PaletteViewHolderVenta(View itemView) {
             super(itemView);
             imageView = (ImageView) itemView.findViewById(R.id.imgProduct);
@@ -86,6 +95,7 @@ public class ProductoAdapter extends RecyclerView.Adapter<ProductoAdapter.Palett
             aumentarCant = (ImageButton) itemView.findViewById(R.id.agregarProduct);
             disminuirCant = (ImageButton) itemView.findViewById(R.id.eliminarProduct);
             presentacionP=  itemView.findViewById(R.id.presentacionProducto);
+            comentarioCant = (ImageButton) itemView.findViewById(R.id.lapizProduct);
 
         }
 
@@ -179,6 +189,15 @@ public class ProductoAdapter extends RecyclerView.Adapter<ProductoAdapter.Palett
                     listener.disminuir(getAdapterPosition());
                     cantEdit.setText(String.valueOf(Globales.getInstance().canTotal));
                     subtotal.setText(Double.toString(Globales.getInstance().subTotal));
+
+                }
+            });
+
+            comentarioCant.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Globales.getInstance().positionRecycler = getAdapterPosition();
+                    listener.disminuir(getAdapterPosition());
 
                 }
             });
