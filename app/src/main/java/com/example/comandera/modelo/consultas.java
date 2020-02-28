@@ -1,14 +1,26 @@
 package com.example.comandera.modelo;
 
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
+import android.widget.EditText;
 import android.widget.Toast;
 import com.example.comandera.Globales;
+import com.example.comandera.MainActivity;
+import com.example.comandera.R;
+
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Calendar;
+import java.util.Date;
+
+import static javax.xml.datatype.DatatypeConstants.DATETIME;
 
 public class consultas {
-
+//    consultas consul= new consultas();
     public String ConsultarNomEstablecimiento(Context context, String id_usuario) {
         String nombreEst = "";
 
@@ -208,4 +220,120 @@ public class consultas {
         }
     }
 
+    public void registrarComentario(String comentario,String ordet_id, Context contexto) {
+        ConexionSQLiteHelper conn = new ConexionSQLiteHelper(contexto);
+        SQLiteDatabase db = conn.getWritableDatabase();
+        db.execSQL("UPDATE orden_det SET ordet_observa='"+comentario+"' WHERE ordet_id ='"+ordet_id+"'");
+        System.out.println("  Comentario guardado   " );
+        db.close();
+    }
+
+    public void verificarFolio(Context context){
+
+        String folio="";
+        ConexionSQLiteHelper conn;
+        conn=new ConexionSQLiteHelper(context);
+        SQLiteDatabase db = conn.getReadableDatabase();
+        String id="";
+        Cursor cursor2 =db.rawQuery("SELECT *  FROM orden" , null);
+        try {
+            if (cursor2 != null) {
+                cursor2.moveToFirst();
+                int index = 0;
+                while (!cursor2.isAfterLast()) {
+                    id= String.valueOf( cursor2.getString(cursor2.getColumnIndex("ord_id")));
+                    if(id!=null) {
+                        if (folio.equals(id)) {
+                            index++;
+
+                            break;
+                        }
+                        cursor2.moveToNext();
+                    }
+                }
+                if (index != 0) {
+
+                    int tamaño=id.length();
+                    if(tamaño<=12){
+                        String f1;
+                        f1=id.substring(6);
+                        int  s= Integer.parseInt(f1);
+                        int s2= s+1;
+                        String f5= String.valueOf(s2);
+                        folio=f5;
+                    }
+                    if(tamaño==13){
+                        String f1;
+                        f1=id.substring(7);
+                        int  s= Integer.parseInt(f1);
+                        int s2= s+1;
+                        String f5= String.valueOf(s2);
+                        folio=f5;
+                    }
+                }
+                else
+                {
+                    folio="1";
+                }
+            }
+            cursor2.close();
+            db.close();
+        }catch(Exception e){
+            Log.println(Log.ERROR,"",e.getMessage());
+        }
+       // return fo;
+
+
+    }
+
+    public String generarFolio() {
+        String numero = Globales.getInstance().ordenN;
+        final Calendar calendar = Calendar.getInstance();
+        long time = System.currentTimeMillis();
+        Date fecha = new Date(time);
+        String s = fecha.toString();
+        String[] fechaString = s.split(" ");
+        int mes = calendar.get(Calendar.MONTH) + 1;
+        String diaNumeroS = fechaString[2];
+        String[] horas = fechaString[3].split(":");
+        String horasS = horas[0];
+        String minutosS = horas[1];
+        String segundosS = horas[2];
+        String anios = fechaString[5];
+        String folioA = numero + diaNumeroS + mes + anios + horasS + minutosS + segundosS;
+     //   System.out.println(" Fecha: " + diaNumeroS + "" + mes + "/" + anios + " " + horasS + ":" + minutosS + ":" + segundosS);
+        System.out.println(" folioA: " + folioA);
+
+     return folioA;
+    }
+
+
 }
+
+
+//final SimpleDateFormat fe = new SimpleDateFormat("ddMMyyyy");
+// Calendar calendar = Calendar.getInstance();
+// DATETIME(`ddMMyyyy HHmmss`);
+//  Fecha objDate = new Date(); // Sistema actual La fecha y la hora se asignan a objDate
+
+//  final Calendar c = Calendar.getInstance();
+//   SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
+
+
+
+
+//  System.out.println(objDate);
+//    String strDateFormat = "hh: mm: ss a dd-MMM-aaaa"; // El formato de fecha está especificado
+//  SimpleDateFormat objSDF = new SimpleDateFormat(strDateFormat); // La cadena de formato de fecha se pasa como un argumento al objeto
+
+
+//String formato = "yyyy-MM-dd HH:mm:ss";
+//DateTimeFormatter formateador = DateTimeFormatter.ofPattern(formato);
+// LocalDateTime ahora = LocalDateTime.now();
+// return formateador.format(ahora);
+// DATETIME( "DD-MMM-YYYY hh:mm A";`20141231 235959`);
+//  final Calendar calendar = Calendar.getInstance();
+//dia = calendar.get(Calendar.DAY_OF_MONTH);
+// mes = calendar.get(Calendar.MONTH);
+// anio = calendar.get(Calendar.YEAR);
+// return;

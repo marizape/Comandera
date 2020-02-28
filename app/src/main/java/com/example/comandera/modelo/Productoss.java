@@ -10,6 +10,17 @@ public class Productoss {
     public double total;
     Bitmap imagen;
     public  String presentacionP;
+    public String comentariosP;
+
+    public String getComentariosP() {
+        return comentariosP;
+    }
+
+    public void setComentariosP(String comentariosP) {
+        this.comentariosP = comentariosP;
+    }
+
+
 
     public String getPresentacionP() {
         return presentacionP;
@@ -23,7 +34,7 @@ public class Productoss {
 
     }
 
-    public Productoss( Bitmap imagen, String nombre, int cantidad, double precio, double subtotal, String presentacionP){
+    public Productoss( Bitmap imagen, String nombre, int cantidad, double precio, double subtotal, String presentacionP, String comentariosP){
         //this.id = id;
         this.imagen = imagen;
         this.nombre=nombre;
@@ -31,6 +42,7 @@ public class Productoss {
         this.precio=precio;
         this.subtotal=subtotal;
         this.presentacionP=presentacionP;
+        this.comentariosP=comentariosP;
         //this.total = total;
     }
 

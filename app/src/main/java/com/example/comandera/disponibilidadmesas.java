@@ -210,10 +210,12 @@ public class disponibilidadmesas extends AppCompatActivity {
                 cursor2.moveToFirst();
                 int index = 0;
 
+
                 while (!cursor2.isAfterLast()) {
                     String mesa= String.valueOf( cursor2.getString(cursor2.getColumnIndex("mesa_num")));
                     String id= String.valueOf( cursor2.getString(cursor2.getColumnIndex("mesa_id")));
                     String estatu= String.valueOf( cursor2.getString(cursor2.getColumnIndex("est_fk")));
+
                     String mes="Mesa "+mesa;
                     arrayList.add(new datosmesa(mes, imagen,id));
 
@@ -240,6 +242,9 @@ public class disponibilidadmesas extends AppCompatActivity {
                     adapter.setOnClickListener((new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
+
+                            Globales.getInstance().folioEnviar=consul.generarFolio();
+
                             int elemen = recyclerView.getChildAdapterPosition(v);
 
                            /* EditText ocupacionmesa;

@@ -140,7 +140,10 @@ public String  cajaa2;
     public int IdEstatusMa;
     public  int numeroInicio;
     public int idEstatu;
+    public String folioEnviar;
+    public String cortaMesa;
 
+    public String idOrden;
 
 
     private static Globales instance = new Globales();

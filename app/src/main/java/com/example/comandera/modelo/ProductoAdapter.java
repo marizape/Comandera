@@ -1,6 +1,8 @@
 package com.example.comandera.modelo;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Color;
 
 import android.text.Editable;
@@ -23,6 +25,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.comandera.ConfiguracionMesa;
 import com.example.comandera.Globales;
 import com.example.comandera.R;
+import com.example.comandera.ui.login.Comentarios;
 
 import java.util.ArrayList;
 
@@ -31,7 +34,8 @@ import static com.example.comandera.R.id.lapizProduct;
 public class ProductoAdapter extends RecyclerView.Adapter<ProductoAdapter.PaletteViewHolderVenta>{
     ArrayList<Productoss> productos;
     private MiListener listener;
-
+    private Context context;
+    consultas consul= new consultas();
 
 
     public interface MiListener {
@@ -82,7 +86,6 @@ public class ProductoAdapter extends RecyclerView.Adapter<ProductoAdapter.Palett
         ImageButton comentarioCant;
         public TextView presentacionP;
 
-        @SuppressLint("WrongViewCast")
         public PaletteViewHolderVenta(View itemView) {
             super(itemView);
             imageView = (ImageView) itemView.findViewById(R.id.imgProduct);
@@ -123,7 +126,6 @@ public class ProductoAdapter extends RecyclerView.Adapter<ProductoAdapter.Palett
             {
                 cantEdit.setTextColor(Color.parseColor("#F48D12"));
             }
-
 
             cantEdit.addTextChangedListener(new TextWatcher() {
                 @Override
@@ -196,12 +198,51 @@ public class ProductoAdapter extends RecyclerView.Adapter<ProductoAdapter.Palett
             comentarioCant.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    Context context=   v.getContext();
                     Globales.getInstance().positionRecycler = getAdapterPosition();
-                    listener.disminuir(getAdapterPosition());
+                    AlertComentarios(context);
+                  // consul.registrarComentario("cebolla","1",context);
 
                 }
             });
 
         }
     }
+
+
+
+
+    private void AlertComentarios(final Context context) {
+        LayoutInflater aceptarCancelacion = LayoutInflater.from(context);
+        View prompstsCancelacion = aceptarCancelacion.inflate(R.layout.comentarios, null);
+        final AlertDialog.Builder builderCancel = new AlertDialog.Builder(context);
+        builderCancel.setView(prompstsCancelacion);
+        builderCancel.setCancelable(false);
+        builderCancel.setTitle("Escriba un comentario que desea agregar o quitar en su producto");
+
+        // final  Button aceptarCancel = (Button)prompstsCancelacion.findViewById(R.id.btnCancel);
+        //  final ImageButton cerrarv = prompstsCancelacion.findViewById(R.id.cerrarCanc);
+
+        final TextView msjc =prompstsCancelacion.findViewById(R.id.comentarios);
+        msjc.setText("");
+        builderCancel.setPositiveButton("Aceptar", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+                String comentario=msjc.getText().toString();
+                consul.registrarComentario(comentario,"1",context);
+            }
+        });
+        builderCancel.setNegativeButton("Cerrar", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+                dialog.cancel();
+            }
+        });
+        AlertDialog alert = builderCancel.create();
+        alert.show();
+    }
+
+
 }

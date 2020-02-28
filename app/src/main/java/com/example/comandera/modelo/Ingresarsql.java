@@ -570,7 +570,6 @@ public class Ingresarsql extends AppCompatActivity {
             // empresaF = "00";
         }
 
-
         String establecimiento =Globales.getInstance().idEstablecimientoLau;
         int e2= Integer.parseInt(establecimiento);
         if(establecimiento!=null && e2!=0){
@@ -617,7 +616,6 @@ public class Ingresarsql extends AppCompatActivity {
             String folio3= empresaF+establecimientoF+fo1;
             String folio= veriFolio(context,folio3);
             fo=empresaF+establecimientoF+folio;
-
         }
 
 
@@ -1119,13 +1117,43 @@ public class Ingresarsql extends AppCompatActivity {
         mesa_fk="1";
         String ord_fk="1";
         String ord_subtotal="6";
-        String  sqlOrden ="INSERT INTO orden (ord_folio,ord_fecha,ord_hora,ord_total,ord_subtotal,ord_iva,mesa_fk,cjus_fk,esta_fk)VALUES('"+ord_folio+"','"+ord_fecha+"','"+ord_hora+"','"+ord_total+"','"+ord_subtotal+"','"+ord_iva+"','"+mesa_fk+"','"+cjus_fk+"','"+esta_fk_ord+"')" ;
-        String  OrdenDetallada ="INSERT INTO orden_det(ordet_cant,ordet_precio, ordet_importe, ordet_observa,ord_fk,prepro_fk,esta_fk) VALUES ('"+ordet_cant+"','"+ordet_precio+"','"+ordet_importe+"','"+ordet_observa+"','"+ord_fk+"','"+prepro_fk+"','"+esta_fk_ordet+"')" ;
+
+
+
 
 
         try {
-            db.execSQL(sqlOrden);
-            db.execSQL(OrdenDetallada);
+            String folio=Globales.getInstance().folioEnviar;
+            if(folio.length()!=0){
+                String validaSiExisteUnIdOrden= Globales.getInstance().idOrden;
+                if(validaSiExisteUnIdOrden.length()!=0)//si la variable idOrden  tiene algo significa que  existe ya una orden creada
+                {
+                    String idOrden= Globales.getInstance().idOrden;
+                    String  OrdenDetallada ="INSERT INTO orden_det(ordet_cant,ordet_precio, ordet_importe, ordet_observa,ord_fk,prepro_fk,esta_fk) VALUES ('"+ordet_cant+"','"+ordet_precio+"','"+ordet_importe+"','"+ordet_observa+"','"+idOrden+"','"+prepro_fk+"','"+esta_fk_ordet+"')" ;
+                    db.execSQL(OrdenDetallada);
+
+
+
+                }
+                else {
+                    String  sqlOrden ="INSERT INTO orden (ord_folio,ord_fecha,ord_hora,ord_total,ord_subtotal,ord_iva,mesa_fk,cjus_fk,esta_fk)VALUES('"+ord_folio+"','"+ord_fecha+"','"+ord_hora+"','"+ord_total+"','"+ord_subtotal+"','"+ord_iva+"','"+mesa_fk+"','"+cjus_fk+"','"+esta_fk_ord+"')" ;
+                    db.execSQL(sqlOrden);
+                    String idOrden=consultaIdOrden(contexto,folio);
+                    Globales.getInstance().idOrden=idOrden;
+
+                    String  OrdenDetallada ="INSERT INTO orden_det(ordet_cant,ordet_precio, ordet_importe, ordet_observa,ord_fk,prepro_fk,esta_fk) VALUES ('"+ordet_cant+"','"+ordet_precio+"','"+ordet_importe+"','"+ordet_observa+"','"+idOrden+"','"+prepro_fk+"','"+esta_fk_ordet+"')" ;
+                    db.execSQL(OrdenDetallada);
+                }
+
+            }
+            else {
+
+            }
+
+
+
+
+
            //Toast.makeText(contexto, "venta registrado. " , Toast.LENGTH_LONG).show();
             db.close();
         }catch(Exception e){
@@ -1171,6 +1199,40 @@ public class Ingresarsql extends AppCompatActivity {
         }catch(Exception e){
             Log.println(Log.ERROR,"Null16 ",e.getMessage());
         }
+    }
+
+
+    public String consultaIdOrden(Context context, String folio) {
+        ConexionSQLiteHelper conn;
+        conn=new ConexionSQLiteHelper(context);
+        SQLiteDatabase db = conn.getReadableDatabase();
+        Cursor cursor2 =db.rawQuery("select ord_folio,ord_id from orden where  ord_folio="+folio , null);
+        String id = "",ord_folio="";
+        String  idOrden="";
+        try {
+            if (cursor2 != null) {
+                cursor2.moveToFirst();
+                int index = 0;
+                while (!cursor2.isAfterLast()) {
+                    id= String.valueOf( cursor2.getString(cursor2.getColumnIndex("ord_id")));
+                    ord_folio= String.valueOf( cursor2.getString(cursor2.getColumnIndex("ord_folio")));
+                    index++;
+                    cursor2.moveToNext();
+                }
+                if (index != 0) {
+                   idOrden=id;
+                }
+                else
+                {
+                 idOrden="";
+                }
+            }
+            cursor2.close();
+            db.close();
+        }catch(Exception e){
+            Log.println(Log.ERROR,"Null16 ",e.getMessage());
+        }
+        return  idOrden;
     }
 
 }

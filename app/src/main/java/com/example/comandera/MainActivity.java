@@ -98,18 +98,12 @@ consultas consul= new consultas();
         }
 
 
-
-
-
-
-
-
-
       // final RecyclerViewLL adaptador = new RecyclerViewLL((ArrayList<ProductosDatos>)  Globales.getInstance().listclientes);
         RecyclerViewBP adapter   = new RecyclerViewBP( (ArrayList<datosmesa>)arrayList);
         adapter.setOnClickListener((new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 int elemen=   recyclerView.getChildAdapterPosition(v);
 
                //cambio de color

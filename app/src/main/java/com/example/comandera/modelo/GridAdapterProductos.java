@@ -11,8 +11,10 @@ import android.widget.BaseAdapter;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.comandera.Globales;
+import com.example.comandera.MenuAdministrador;
 import com.example.comandera.R;
 
 import java.text.SimpleDateFormat;
@@ -23,7 +25,7 @@ import java.util.Calendar;
 
 public class GridAdapterProductos extends BaseAdapter  {
     public  String id="";
-
+    consultas consul= new consultas();
     private Context context;
 
     private ArrayList<ProductosDatos> arrayList;
@@ -201,7 +203,11 @@ public class GridAdapterProductos extends BaseAdapter  {
                     sq.consultaestatus(contexto);
                     String esta_fk_ord=String.valueOf(Globales.getInstance().idEstatusLau);//OFICIAL
 
-                    String ord_folio=sq.generarFolio(contexto);
+                   // String ord_folio=sq.generarFolio(contexto);
+                   // String ord_folio=consul.generarFolio();
+
+                    String ord_folio=Globales.getInstance().folioEnviar;
+                   // Toast.makeText(context,"ord_folio" +ord_folio,Toast.LENGTH_LONG).show();
 
                     String mesa_fk="1";
 

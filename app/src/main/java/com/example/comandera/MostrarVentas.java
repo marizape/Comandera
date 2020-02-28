@@ -28,6 +28,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.comandera.modelo.ConexionSQLiteHelper;
 import com.example.comandera.modelo.ProductoAdapter;
 import com.example.comandera.modelo.Productoss;
+import com.example.comandera.modelo.consultas;
 import com.example.comandera.ui.login.InicioSesion;
 
 import java.io.ByteArrayInputStream;
@@ -36,7 +37,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 
 public class MostrarVentas extends AppCompatActivity implements ProductoAdapter.MiListener {
-
+    consultas consul= new consultas();
     RecyclerView recyclerView;
     ConexionSQLiteHelper conn;
     TextView OMesa;
@@ -69,7 +70,7 @@ public class MostrarVentas extends AppCompatActivity implements ProductoAdapter.
 
         recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
         btnMontoTotal = (Button) findViewById(R.id.btnCobrar); // boton de cobrar
-        agregar = (Button) findViewById(R.id.btnAgregar); //boton de agregar los producto
+        agregar = (Button) findViewById(R.id.btnenviarOrden); //boton de agregar los producto
         cancelar = (Button) findViewById(R.id.btnCancelar); // boton de cancelar lo de los productos
 
         OMesa= findViewById(R.id.OMesa);
@@ -80,19 +81,25 @@ public class MostrarVentas extends AppCompatActivity implements ProductoAdapter.
         adaptaProdsLista = new ProductoAdapter(MostrarVentas.this, productos);
         consultaSQL2();
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-/*
+
         agregar.setOnClickListener(new View.OnClickListener() {
             @Override
            public void onClick(View v) {
                 finish();
-                startActivity(new Intent(MostrarVentas.this, Productos.class));
+
+              //  String ord_folio=consul.generarFolio();
+
+               // String s="Mesa";
+              //  System.out.println(s.substring(0,4));
+               // startActivity(new Intent(MostrarVentas.this, Productos.class));
+
             }
-        });*/
+        });
 
         cancelar.setOnClickListener(new View.OnClickListener() {
-            @Override
+           @Override
             public void onClick(View v) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(MostrarVentas.this);
+             /*   AlertDialog.Builder builder = new AlertDialog.Builder(MostrarVentas.this);
                 builder.setCancelable(false);
                 builder.setMessage("¿Está seguro de cancelar la captura?");
                 builder.setPositiveButton("Si", new DialogInterface.OnClickListener() {
@@ -118,7 +125,7 @@ public class MostrarVentas extends AppCompatActivity implements ProductoAdapter.
                     }
                 });
                 AlertDialog alert = builder.create();
-                alert.show();
+                alert.show();*/
             }
         });
 /*
@@ -132,6 +139,7 @@ public class MostrarVentas extends AppCompatActivity implements ProductoAdapter.
 
             }
         });*/
+
     }
 
 
@@ -141,7 +149,7 @@ public class MostrarVentas extends AppCompatActivity implements ProductoAdapter.
         productos.clear();
         SQLiteDatabase db = conn.getReadableDatabase();
 
-        Cursor cursor2 =db.rawQuery("SELECT ord_id, ord_folio,ordet_cant, prst_descripcion,ordet_precio, ord_total, prd_nombre, prd_imagen, prepro_precompra, orden_det.prepro_fk\n" +
+        Cursor cursor2 =db.rawQuery("SELECT ord_id, ord_folio,ordet_cant, prst_descripcion,ordet_precio, ord_total,ordet_observa, prd_nombre, prd_imagen, prepro_precompra, orden_det.prepro_fk\n" +
                 "FROM estatus, orden, orden_det, producto, prest_prod\n" +
                 "INNER JOIN presentacion ON presentacion.prst_id = prest_prod.prst_fk   \n" +
                 "WHERE estatus.esta_estatus='por preparar' AND orden.esta_fk=estatus.esta_id  \n" +
@@ -191,10 +199,11 @@ public class MostrarVentas extends AppCompatActivity implements ProductoAdapter.
                     bitmap = BitmapFactory.decodeStream(bais);
                     //var para presentacion
                     String presentacion = cursor2.getString(cursor2.getColumnIndex("prst_descripcion"));
+                    String comentario = cursor2.getString(cursor2.getColumnIndex("ordet_observa"));
 //////////DUDA
                     //Asignación de la información
 
-                    Productoss producto = new Productoss(bitmap,nomb,cant,precioUnitario,subTot,presentacion);
+                    Productoss producto = new Productoss(bitmap,nomb,cant,precioUnitario,subTot,presentacion, comentario);
                     productos.add(producto);
 
                     btnMontoTotal.setText("Registrar venta \t\n\t $ " +String.format("%.2f", toTal));
@@ -295,8 +304,8 @@ public class MostrarVentas extends AppCompatActivity implements ProductoAdapter.
                 public void onClick(DialogInterface dialog, int which) {
                     //if user pressed "yes", then he is allowed to exit from application
                     SQLiteDatabase db = conn.getReadableDatabase();
-                    Cursor cursorC = db.rawQuery("DELETE FROM documento_det WHERE documento_det.doc_fk ="+Globales.getInstance().idDetalle, null);
-                    Cursor cursorC2 = db.rawQuery("DELETE FROM documento WHERE documento.doc_id="+Globales.getInstance().idDetalle, null);
+                    Cursor cursorC = db.rawQuery("DELETE FROM orden_det WHERE orden_det.ordet_id ="+Globales.getInstance().idDetalle, null);
+                    Cursor cursorC2 = db.rawQuery("DELETE FROM orden WHERE orden.ord_id="+Globales.getInstance().idDetalle, null);
 
                     cursorC.moveToFirst();
                     cursorC2.moveToFirst();
@@ -376,7 +385,8 @@ public class MostrarVentas extends AppCompatActivity implements ProductoAdapter.
                     cantotal = cant2-1;
 
                 }/*else if(tipo == "cambia"){
-                    cantotal = Globales.getInstance().cantiOperacion;
+                    cantotal = Globales.getInstance().cantiOperacion; DELETE FROM orden_det WHERE orden_det.ord_fk ='3' AND orden_det.prepro_fk='1'
+                    //Cursor cursorE=db.rawQuery("DELETE FROM documento_det WHERE documento_det.doc_fk ="+Globales.getInstance().idDetalle+" AND documento_det.prepro_fk="+Globales.getInstance().idProducto, null);
                 }*/else if (tipo == "eliminar"){
                     Cursor cursorE=db.rawQuery("DELETE FROM orden_det WHERE orden_det.ord_fk ="+Globales.getInstance().idDetalle+" AND orden_det.prepro_fk="+Globales.getInstance().idProducto, null);
                     cursorE.moveToNext();
@@ -392,11 +402,11 @@ public class MostrarVentas extends AppCompatActivity implements ProductoAdapter.
 
                 Globales.getInstance().subTotal=toTal2;
 
-                db2.execSQL("UPDATE orden_det SET ordet_cant = "+cantotal+", ordet_importe = "+toTal2+" WHERE ord_fk ="+Globales.getInstance().idDetalle+" AND orden_det.prepro_fk="+Globales.getInstance().idProducto);
-               // db2.execSQL("UPDATE documento_det SET docd_cantprod = "+cantotal+", docd_precven = "+toTal2+" WHERE doc_fk ="+Globales.getInstance().idDetalle+" AND documento_det.prepro_fk="+Globales.getInstance().idProducto);
+                db2.execSQL("UPDATE orden_det SET ordet_cant = "+cantotal+", prepro_precompra = "+toTal2+" WHERE ord_fk ="+Globales.getInstance().idDetalle+" AND orden_det.prepro_fk="+Globales.getInstance().idProducto);
+               //db2.execSQL("UPDATE documento_det SET docd_cantprod = "+cantotal+", docd_precven = "+toTal2+" WHERE doc_fk ="+Globales.getInstance().idDetalle+" AND documento_det.prepro_fk="+Globales.getInstance().idProducto);
 
               //  Cursor cursor3 = db.rawQuery("SELECT SUM(docd_precven) as suma FROM documento_det WHERE documento_det.doc_fk ="+Globales.getInstance().idDetalle, null);
-                Cursor cursor3 = db.rawQuery("SELECT SUM(ordet_importe) as suma FROM orden_det WHERE orden_det.ord_fk ="+Globales.getInstance().idDetalle, null);
+                Cursor cursor3 = db.rawQuery("SELECT SUM(prepro_precompra) as suma FROM orden_det WHERE orden_det.ord_fk ="+Globales.getInstance().idDetalle, null);
                 cursor3.moveToFirst();
 
                 TotalVenta = Double.parseDouble(cursor3.getString(cursor3.getColumnIndex("suma")));
@@ -404,8 +414,9 @@ public class MostrarVentas extends AppCompatActivity implements ProductoAdapter.
                 totalCobrar = Double.valueOf(v);
                 btnMontoTotal.setText("Registrar venta \t\n\t $ " + Double.toString(totalCobrar));
               //  db2.execSQL("UPDATE documento SET doc_subtotal = "+TotalVenta+", doc_total  = "+TotalVenta+" WHERE doc_id ="+Globales.getInstance().idDetalle);
-                db2.execSQL("UPDATE orden SET ord_subtotal = "+TotalVenta+", ord_total  = "+TotalVenta+" WHERE ord_id ="+Globales.getInstance().idDetalle);
+                db2.execSQL("UPDATE orden SET prepro_precompra = "+TotalVenta+", ord_total  = "+TotalVenta+" WHERE ord_id ="+Globales.getInstance().idDetalle);
                 // Restore state
+
                 //recyclerViewState = recyclerView.getLayoutManager().onSaveInstanceState();
                 consultaSQL2();
                 //recyclerView.getLayoutManager().onRestoreInstanceState(recyclerViewState);

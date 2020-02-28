@@ -95,14 +95,18 @@ public class RecyclerViewLL extends RecyclerView.Adapter<RecyclerViewLL.PaletteV
             precio.setText(clasificacion.getClasificacion());
 
         }
+   //     ddMMyyyy
         private String fecha() {
-            final SimpleDateFormat fe = new SimpleDateFormat("dd/MM/yyyy");
+           // final SimpleDateFormat fe = new SimpleDateFormat("dd/MM/yyyy");
+            final SimpleDateFormat fe = new SimpleDateFormat("ddMMyyyy");
             Calendar calendar = Calendar.getInstance();
             return fe.format(calendar.getTime());
         }
         private String hora() {
             final Calendar c = Calendar.getInstance();
-            SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
+           // SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
+            SimpleDateFormat dateFormat = new SimpleDateFormat("HHmmss");
+
             String datetime = dateFormat.format(c.getTime());
             return datetime;
         }
