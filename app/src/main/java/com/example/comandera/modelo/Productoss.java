@@ -12,6 +12,9 @@ public class Productoss {
     public  String presentacionP;
     public String comentariosP;
 
+
+
+
     public String getComentariosP() {
         return comentariosP;
     }
@@ -34,7 +37,7 @@ public class Productoss {
 
     }
 
-    public Productoss( Bitmap imagen, String nombre, int cantidad, double precio, double subtotal, String presentacionP, String comentariosP){
+    public Productoss(Bitmap imagen, String nombre, int cantidad, double precio, double subtotal, String presentacionP, String comentariosP){
         //this.id = id;
         this.imagen = imagen;
         this.nombre=nombre;

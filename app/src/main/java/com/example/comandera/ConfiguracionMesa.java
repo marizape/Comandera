@@ -67,6 +67,7 @@ public class ConfiguracionMesa extends AppCompatActivity {
                                     startActivity(intencion2);
                                 }
                             });
+
                     alerta.setNegativeButton("No", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {

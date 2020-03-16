@@ -59,7 +59,6 @@ public class GridAdapterProductos extends BaseAdapter  {
     }
 */
 
-
     private String fecha() {
         final SimpleDateFormat fe = new SimpleDateFormat("dd/MM/yyyy");
         Calendar calendar = Calendar.getInstance();
@@ -84,7 +83,6 @@ public class GridAdapterProductos extends BaseAdapter  {
                 while (!cursor2.isAfterLast()) {
                     Globales.getInstance().vNumDoc2= String.valueOf( cursor2.getString(cursor2.getColumnIndex("doc_fk")));
                     Globales.getInstance().vExisteP2 = "existeElProducto";
-
                     index++;
                     cursor2.moveToNext();
                 }
@@ -162,12 +160,9 @@ public class GridAdapterProductos extends BaseAdapter  {
                     String pre=productos.getPresentacion();
 
 
-
                     TextView id= finalConvertView.findViewById(R.id.idid);
                     id.setText(productos.getId());
                     String id4= productos.getId();
-
-
 
 
                     final Ingresarsql sq = new Ingresarsql();
@@ -186,15 +181,15 @@ public class GridAdapterProductos extends BaseAdapter  {
                             ordet_cant= "1";
                         }
                     }
-
                     String prepro_fk=iden; //  id del producto agregado al carrito
-                    String ordet_importe ="0"; //OFICIAL
+                    String ordet_importe =String.valueOf( precio.getText());
                     String ord_fecha=fecha();
                     String  ord_hora= hora();
                     String  ord_iva="0";//No oficial dato desconocido
                     String  ordet_observa="";//OFICIAL
-                    String ord_total="0";//OFICIAL
+                    String ord_total=String.valueOf( precio.getText());
                     String cjus_fk= Globales.getInstance().idCajaLau;
+
                     String est_fk= Globales.getInstance().idEstablecimientoLau;
                     sq.consultaestatus(contexto);
                     String esta_fk_ordet=String.valueOf(Globales.getInstance().idEstatusLau);//OFICIAL
@@ -207,24 +202,24 @@ public class GridAdapterProductos extends BaseAdapter  {
                    // String ord_folio=consul.generarFolio();
 
                     String ord_folio=Globales.getInstance().folioEnviar;
-                   // Toast.makeText(context,"ord_folio" +ord_folio,Toast.LENGTH_LONG).show();
+                   //Toast.makeText(context,"ord_folio" +ord_folio,Toast.LENGTH_LONG).show();
+                    String mesa=Globales.getInstance().idMesa;
 
-                    String mesa_fk="1";
+                    String mesa_fk=consul.consultarIdMesa(contexto,mesa);
 
+
+                    Toast.makeText(contexto,"11111111",Toast.LENGTH_LONG).show();
                     sq.registrarVenta(contexto,ordet_cant,ordet_precio, ordet_importe, ordet_observa,prepro_fk,esta_fk_ordet,ord_folio,ord_fecha,ord_hora,ord_total,ord_iva,mesa_fk,cjus_fk,esta_fk_ord);
-
-
-                 //   sq.registrarVentaProceso(ordet_cant,docd_preccom, docd_descuento,prepro_fk,ext_fk, ordet_import ,Globales.getInstance().idFolio, ord_fecha,ord_hora, ord_iva ,docd_cosind ,ordet_observa,doc_saldo,prs_fk,usr_fk,cjus_fk,est_fk,esta_fk,tpd_fk,contexto);
-
+                    Toast.makeText(contexto,"222222222222",Toast.LENGTH_LONG).show();
+                  //sq.registrarVentaProceso(ordet_cant,docd_preccom, docd_descuento,prepro_fk,ext_fk, ordet_import ,Globales.getInstance().idFolio, ord_fecha,ord_hora, ord_iva ,docd_cosind ,ordet_observa,doc_saldo,prs_fk,usr_fk,cjus_fk,est_fk,esta_fk,tpd_fk,contexto);
                     sq.contabilizaLosProdAgreCarr(contexto);
+
                 }
             });
-
 
             holder.botonQuitarProductoC.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-
 /*
                     /////////////////
                     ProductosDatos productos= arrayList.get(position);
@@ -238,13 +233,8 @@ public class GridAdapterProductos extends BaseAdapter  {
                     TextView presentacion= finalConvertView.findViewById(R.id.presentacionProducto);
                     presentacion.setText(productos.getPresentacion());
 
-
-
-
                     TextView id= finalConvertView.findViewById(R.id.idid);
                     id.setText(productos.getId());
-
-
 
                     // id= productos.getId();
                     /////////////////
@@ -287,8 +277,6 @@ public class GridAdapterProductos extends BaseAdapter  {
                             System.out.println("El producto no ha sido insertado no hay necesidad de eliminar "+ docd_cantprod2);
                         }
                     }
-
-
                     sq.contabilizaLosProdAgreCarr(contexto);*/
                 }
             });

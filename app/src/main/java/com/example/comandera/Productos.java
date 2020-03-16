@@ -176,7 +176,6 @@ public class Productos extends AppCompatActivity {
         botonBuscar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 sq.contabilizaLosProdAgreCarr(getApplicationContext());
                 buscarProducto();
                 String query = busqueda.getText().toString();
@@ -189,7 +188,6 @@ public class Productos extends AppCompatActivity {
             }
         });
 
-
         imageView5.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -198,7 +196,6 @@ public class Productos extends AppCompatActivity {
                 startActivity(new Intent(Productos.this, MostrarVentas.class));
             }
         });
-
 
         cuentaProductosC.setOnClickListener(new View.OnClickListener() {
             @Override

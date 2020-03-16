@@ -78,7 +78,6 @@ consultas consul= new consultas();
         validarNumeroMesa();
         arrayList.clear();
         int iin=Globales.getInstance().numeroInicio;
-
         if(iin==1) {
             for(int i=1; i<num+1; i++) {
                 String cad=String.valueOf(i);
@@ -87,7 +86,6 @@ consultas consul= new consultas();
             }
         }else {
             if (iin != 1) {
-
                 int hasta = iin + num + 1;
                 for (int i = iin + 1; i < hasta; i++) {
                     String cad= String.valueOf(i);
@@ -103,9 +101,8 @@ consultas consul= new consultas();
         adapter.setOnClickListener((new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                int elemen=   recyclerView.getChildAdapterPosition(v);
-
+///CAMBIO DE COLOR PARA EL MAIN CONFIGURACION DE MESAS
+              /*  int elemen=   recyclerView.getChildAdapterPosition(v);
                //cambio de color
                     if (!v.isSelected()) {
                         v.setSelected(true);
@@ -114,15 +111,12 @@ consultas consul= new consultas();
                         v.setSelected(false);
                         v.setBackgroundColor(Color.parseColor("#7EF172"));
                     }
-
                 System.out.println(" Pulsado el elemento    " + arrayList.get(elemen).getNombre());
-                Toast.makeText(MainActivity.this,"Clic en "+ arrayList.get(elemen).getNombre(),Toast.LENGTH_LONG).show();
+                Toast.makeText(MainActivity.this,"Clic en "+ arrayList.get(elemen).getNombre(),Toast.LENGTH_LONG).show();*/
             }
         }));
 
         recyclerView.setAdapter(adapter);
-
-
         cancelar = (Button) findViewById(R.id.botoncancelar);
         cancelar.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -131,7 +125,7 @@ consultas consul= new consultas();
                 startActivity(btncancelar);
             }
         });
-//CAMBIAR EL BOTÓN
+        //CAMBIAR EL BOTÓN
         btnnuevaorden = (Button) findViewById(R.id.buttonnuevaorden);
         btnnuevaorden.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -140,7 +134,6 @@ consultas consul= new consultas();
              //   startActivity(btncancelar);
                 ///////////////Checar lo de las consultas de intercion en la tabla mesas con el boton guardar +1
                 String nombre=consul.ConsultarNomEstablecimiento(getApplicationContext(), "1");
-                 consul.AgregarEstatus(getApplicationContext());
                  validarNumeroMesa();
 
                  int iin=Globales.getInstance().numeroInicio;
@@ -165,7 +158,6 @@ consultas consul= new consultas();
         getMenuInflater().inflate(R.menu.menuoverflowcasita, menu);
         return true;
     }
-
 /////////////////////////////////////////////////////Función para no salir de la pantalla deseada ////////////////////
    /* public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
@@ -222,6 +214,7 @@ consultas consul= new consultas();
         final List<datosmesa> arrayList = new ArrayList<datosmesa>();
         Drawable imagen = ContextCompat.getDrawable(getApplicationContext(), R.drawable.mesita);
         Cursor cursor2 =db.rawQuery("select * from mesa", null);
+
         String mesa="";
         try {
             if (cursor2 != null) {

@@ -103,6 +103,10 @@ public class ProductoAdapter extends RecyclerView.Adapter<ProductoAdapter.Palett
         }
 
         public void bind(final Productoss productos, final MiListener listener) {
+
+
+
+
             imageView.setImageBitmap(productos.imagen);
             nombreProd.setText(productos.getNombre());
             precio.setText("$ " + Double.toString(productos.getPrecio()));
@@ -143,8 +147,6 @@ public class ProductoAdapter extends RecyclerView.Adapter<ProductoAdapter.Palett
                     subtotal.setText(Double.toString(Globales.getInstance().subTotal));
                 }
             });
-
-
 
             itemView.setOnClickListener(new View.OnClickListener(){
                 @Override

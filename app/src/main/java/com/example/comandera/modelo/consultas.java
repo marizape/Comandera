@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Color;
 import android.util.Log;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -14,8 +15,10 @@ import com.example.comandera.R;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 import static javax.xml.datatype.DatatypeConstants.DATETIME;
 
@@ -73,7 +76,6 @@ public class consultas {
                     }
                     else
                     {
-
                         String sql ="INSERT INTO mesa(mesa_num,est_fk,esta_fk) VALUES ('"+numeMesa+"','"+estable+"','"+estatus+"')" ;
                         db.execSQL(sql);
                         Toast.makeText(context, "Exito uiuuyh . " , Toast.LENGTH_LONG).show();
@@ -110,38 +112,25 @@ public class consultas {
         }db.close();*/
        // return numMesa;
     }
-    public void  AgregarEstatus(Context context){
-    //    String idestatus = "";3
+    public void  consutaElEstatusHabilidato(Context context){
+    //  String idestatus = "";
         ConexionSQLiteHelper conn;
         conn = new ConexionSQLiteHelper(context);
         SQLiteDatabase db = conn.getWritableDatabase();
-            Cursor Estatus = db.rawQuery("SELECT esta_id FROM estatus WHERE esta_estatus LIKE '%habilitado%';", null);
+            Cursor Estatus = db.rawQuery("SELECT esta_id,esta_estatus FROM estatus WHERE esta_estatus='habilitado';", null);
+
             try {
                 if (Estatus != null) {
                     Estatus.moveToFirst();
                   //   idestatus = Estatus.getString(Estatus.getColumnIndex("esta_id"));
                     Globales.getInstance().IdEstatusMa = Estatus.getInt(Estatus.getColumnIndex("esta_id"));
-                }
+                   }
                 Estatus.close();
                 db.close();
             } catch (Exception e) {
             }
     }
 
-    public void ConsultarEstatus( Context context, String mesaNum){
-        ConexionSQLiteHelper conn;
-        conn = new ConexionSQLiteHelper(context);
-        SQLiteDatabase db = conn.getWritableDatabase();
-        Cursor consultaEstatus = db.rawQuery("SELECT mesa_num, esta_estatus FROM mesa, estatus", null);
-        try{
-            if(consultaEstatus!=null){
-                consultaEstatus.moveToFirst();
-            }
-            consultaEstatus.close();
-            db.close();
-        }catch (Exception e){
-        }
-    }
 
     public  int  loginM(Context context, String usuario, String contraseña){
 
@@ -150,6 +139,7 @@ public class consultas {
         SQLiteDatabase db = conn.getReadableDatabase();
         String usu, pass;
         int var=0, idUsu;
+
         Cursor cursor2 =db.rawQuery("SELECT usr_id,usr_usuario, usr_password FROM usuario WHERE usr_usuario='"+usuario+"'  AND usr_password='"+contraseña+"' " , null);
 
         try {
@@ -177,13 +167,18 @@ public class consultas {
 
     }
 
-    public void cambioDeEstatus(Context context, int id){
+    public void cambioDeEstatus(Context context, String numM){
         ConexionSQLiteHelper conn = new ConexionSQLiteHelper(context);
         SQLiteDatabase db = conn.getWritableDatabase();
         consultarEstatusDesabilitado(context);
-        String vari= String.valueOf(Globales.getInstance().idEstatu);
-        db.execSQL("UPDATE mesa SET esta_fk="+vari+" WHERE mesa_id="+id);
+        String vari=numM;
+        /*System.out.println(vari); Cortando la Mesa
+        String[] var2=vari.split( " ");
+        String var3=var2[1];*/
+        int aux=Globales.getInstance().idEstatu;
+        db.execSQL("UPDATE mesa SET  esta_fk="+ Globales.getInstance().idEstatu+" WHERE mesa_num="+vari);
         db.close();
+      //  mesa_num
     }
 
     public void consultarEstatusDesabilitado(Context context){
@@ -194,6 +189,7 @@ public class consultas {
         try {
             if (Estatu != null) {
                 Estatu.moveToFirst();
+                int var= Estatu.getInt(Estatu.getColumnIndex("esta_id"));
                 Globales.getInstance().idEstatu = Estatu.getInt(Estatu.getColumnIndex("esta_id"));
             }
             Estatu.close();
@@ -201,6 +197,7 @@ public class consultas {
         } catch (Exception e) {
         }
     }
+
 
     public void cargarOrdenes(Context context){
         ConexionSQLiteHelper conn;
@@ -219,7 +216,6 @@ public class consultas {
         } catch (Exception e) {
         }
     }
-
     public void registrarComentario(String comentario,String ordet_id, Context contexto) {
         ConexionSQLiteHelper conn = new ConexionSQLiteHelper(contexto);
         SQLiteDatabase db = conn.getWritableDatabase();
@@ -236,6 +232,7 @@ public class consultas {
         SQLiteDatabase db = conn.getReadableDatabase();
         String id="";
         Cursor cursor2 =db.rawQuery("SELECT *  FROM orden" , null);
+
         try {
             if (cursor2 != null) {
                 cursor2.moveToFirst();
@@ -245,7 +242,6 @@ public class consultas {
                     if(id!=null) {
                         if (folio.equals(id)) {
                             index++;
-
                             break;
                         }
                         cursor2.moveToNext();
@@ -282,12 +278,10 @@ public class consultas {
             Log.println(Log.ERROR,"",e.getMessage());
         }
        // return fo;
-
-
     }
 
     public String generarFolio() {
-        String numero = Globales.getInstance().ordenN;
+        String numero = Globales.getInstance().idMesa;
         final Calendar calendar = Calendar.getInstance();
         long time = System.currentTimeMillis();
         Date fecha = new Date(time);
@@ -301,39 +295,181 @@ public class consultas {
         String segundosS = horas[2];
         String anios = fechaString[5];
         String folioA = numero + diaNumeroS + mes + anios + horasS + minutosS + segundosS;
-     //   System.out.println(" Fecha: " + diaNumeroS + "" + mes + "/" + anios + " " + horasS + ":" + minutosS + ":" + segundosS);
+     // System.out.println(" Fecha: " + diaNumeroS + "" + mes + "/" + anios + " " + horasS + ":" + minutosS + ":" + segundosS);
         System.out.println(" folioA: " + folioA);
-
      return folioA;
     }
 
+    public void MostrarOrdenesEnLaTabla(Context context){
+        ConexionSQLiteHelper conn;
+        conn = new ConexionSQLiteHelper(context);
+        SQLiteDatabase db = conn.getWritableDatabase();
+        String numeroMesa=Globales.getInstance().idMesa;
+        Cursor OrdenTabla = db.rawQuery("SELECT mesa_num "+numeroMesa+"   FROM mesa", null);
+        OrdenTabla.moveToFirst();
+        db.close();
+        if(numeroMesa.length()!=0){
+            Cursor OrdenTabla2=db.rawQuery("UPDATE orden_det SET ordet_cant='3' WHERE ordet_id='1'",null);
+            OrdenTabla2.moveToFirst();
 
+        }
+
+    }
+
+    public void consultaEstatusDePreparacion(Context context){
+        ConexionSQLiteHelper conn;
+        conn = new ConexionSQLiteHelper(context);
+
+        SQLiteDatabase db = conn.getWritableDatabase();
+        Cursor Estatu = db.rawQuery("SELECT esta_id,esta_estatus FROM estatus WHERE esta_estatus='preparado';", null);
+        Cursor Estatu2 = db.rawQuery("SELECT esta_id,esta_estatus FROM estatus WHERE esta_estatus='entregada';", null);
+        Cursor Estatu3 = db.rawQuery("SELECT esta_id,esta_estatus FROM estatus WHERE esta_estatus='por preparar';", null);
+
+        try {
+            if (Estatu != null) {
+                Estatu.moveToFirst();
+                Globales.getInstance().idEstatu = Estatu.getInt(Estatu.getColumnIndex("esta_id"));
+
+            }
+            Estatu.close();
+            if(Estatu2!=null){
+                Globales.getInstance().idEstatu = Estatu2.getInt(Estatu.getColumnIndex("esta_id"));
+            }
+            if(Estatu3!=null)
+                Globales.getInstance().idEstatu = Estatu3.getInt(Estatu.getColumnIndex("esta_id"));
+            db.close();
+        } catch (Exception e) {
+        }
+
+    }
+
+
+
+
+
+    public String consultarIdMesa(Context contextO, String mesanum){
+        ConexionSQLiteHelper conn;
+        conn = new ConexionSQLiteHelper( contextO);
+        SQLiteDatabase db = conn.getWritableDatabase();
+        final List<datosmesa> arrayList = new ArrayList<datosmesa>();
+        String id="";
+        String idOri="";
+        Cursor cursor2 =db.rawQuery("SELECT mesa_num,esta_fk,mesa_id FROM mesa WHERE mesa_num='"+mesanum+"'", null);
+        try {
+            if (cursor2 != null) {
+                cursor2.moveToFirst();
+                int index = 0;
+                while (!cursor2.isAfterLast()) {
+                    String mesa= String.valueOf( cursor2.getString(cursor2.getColumnIndex("mesa_num")));
+                     idOri= String.valueOf( cursor2.getString(cursor2.getColumnIndex("mesa_id")));
+                    int estatu= Integer.parseInt(cursor2.getString(cursor2.getColumnIndex("esta_fk")));
+                    index++;
+                    cursor2.moveToNext();
+                }
+                if (index != 0) {
+                    id=idOri;
+
+                }
+            }
+
+
+        }catch(Exception e){
+            Log.println(Log.ERROR,"",e.getMessage());
+        }
+        return id;
+    }
+
+
+
+
+
+    public void consultarEstatusHabilitado(Context context){
+        ConexionSQLiteHelper conn;
+        conn = new ConexionSQLiteHelper(context);
+        SQLiteDatabase db = conn.getWritableDatabase();
+        Cursor Estatu = db.rawQuery("SELECT esta_id,esta_estatus FROM estatus WHERE esta_estatus='habilitado';", null);
+        try {
+            if (Estatu != null) {
+                Estatu.moveToFirst();
+                int var= Estatu.getInt(Estatu.getColumnIndex("esta_id"));
+                Globales.getInstance().idEstatuHabilitado = Estatu.getInt(Estatu.getColumnIndex("esta_id"));
+            }
+            Estatu.close();
+            db.close();
+        } catch (Exception e) {
+        }
+    }
+
+
+    public int consultarIdMesaEstatus(Context contextO, String mesanum){
+        ConexionSQLiteHelper conn;
+        conn = new ConexionSQLiteHelper( contextO);
+        SQLiteDatabase db = conn.getWritableDatabase();
+        final List<datosmesa> arrayList = new ArrayList<datosmesa>();
+        int id=0;
+        int idOri=0;
+        Cursor cursor2 =db.rawQuery("SELECT mesa_num,esta_fk,mesa_id FROM mesa WHERE mesa_id='"+mesanum+"'", null);
+        try {
+            if (cursor2 != null) {
+                cursor2.moveToFirst();
+                int index = 0;
+                while (!cursor2.isAfterLast()) {
+                    String mesa= String.valueOf( cursor2.getString(cursor2.getColumnIndex("mesa_num")));
+                   // idOri= String.valueOf( cursor2.getString(cursor2.getColumnIndex("mesa_id")));
+                   idOri= Integer.parseInt(cursor2.getString(cursor2.getColumnIndex("esta_fk")));
+                    index++;
+                    cursor2.moveToNext();
+                }
+                if (index != 0) {
+                    id=idOri;
+
+                }
+            }
+
+
+        }catch(Exception e){
+            Log.println(Log.ERROR,"",e.getMessage());
+        }
+        return id;
+    }
+
+    public void cambioDeEstatusDisponi(Context context, String numM, int esta_fk){
+        ConexionSQLiteHelper conn = new ConexionSQLiteHelper(context);
+        SQLiteDatabase db = conn.getWritableDatabase();
+        db.execSQL("UPDATE mesa SET  esta_fk="+ esta_fk+" WHERE mesa_num="+numM);
+        db.close();
+    }
+
+    public String ConsultaSiExisteFolioDeMesa(Context contextO, String mesa_fk){
+        ConexionSQLiteHelper conn;
+        conn = new ConexionSQLiteHelper( contextO);
+        SQLiteDatabase db = conn.getWritableDatabase();
+       String fol="";
+        String ord_folio="";
+        int idOri=0;
+        Cursor cursor2 =db.rawQuery("SELECT ord_folio, ord_id, mesa_fk FROM orden WHERE mesa_fk='"+mesa_fk+"'", null);
+        try {
+            if (cursor2 != null) {
+                cursor2.moveToFirst();
+                int index = 0;
+                while (!cursor2.isAfterLast()) {
+                    String mesa_fk2= String.valueOf( cursor2.getString(cursor2.getColumnIndex("mesa_fk")));
+                     ord_folio= String.valueOf( cursor2.getString(cursor2.getColumnIndex("ord_folio")));
+                    int ord_id= Integer.parseInt(cursor2.getString(cursor2.getColumnIndex("ord_id")));
+                    index++;
+                    cursor2.moveToNext();
+                }
+                if (index != 0) {
+                    fol=ord_folio;
+
+                }
+            }
+
+
+        }catch(Exception e){
+            Log.println(Log.ERROR,"",e.getMessage());
+        }
+        return fol;
+    }
 }
 
-
-//final SimpleDateFormat fe = new SimpleDateFormat("ddMMyyyy");
-// Calendar calendar = Calendar.getInstance();
-// DATETIME(`ddMMyyyy HHmmss`);
-//  Fecha objDate = new Date(); // Sistema actual La fecha y la hora se asignan a objDate
-
-//  final Calendar c = Calendar.getInstance();
-//   SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
-
-
-
-
-//  System.out.println(objDate);
-//    String strDateFormat = "hh: mm: ss a dd-MMM-aaaa"; // El formato de fecha está especificado
-//  SimpleDateFormat objSDF = new SimpleDateFormat(strDateFormat); // La cadena de formato de fecha se pasa como un argumento al objeto
-
-
-//String formato = "yyyy-MM-dd HH:mm:ss";
-//DateTimeFormatter formateador = DateTimeFormatter.ofPattern(formato);
-// LocalDateTime ahora = LocalDateTime.now();
-// return formateador.format(ahora);
-// DATETIME( "DD-MMM-YYYY hh:mm A";`20141231 235959`);
-//  final Calendar calendar = Calendar.getInstance();
-//dia = calendar.get(Calendar.DAY_OF_MONTH);
-// mes = calendar.get(Calendar.MONTH);
-// anio = calendar.get(Calendar.YEAR);
-// return;

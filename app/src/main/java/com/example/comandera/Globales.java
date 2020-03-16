@@ -1,5 +1,7 @@
 package com.example.comandera;
 
+import android.content.Context;
+
 import com.example.comandera.modelo.ProductosDatos;
 
 import java.util.ArrayList;
@@ -9,7 +11,7 @@ public class Globales {
 
     public String usuario;
     public String numeroM="0";
-    public  String ordenN;
+    public  String ordenN; // obtiene el numero de la mesa con nombre ejemplo: Mesa [2]
 
    // public String ingresoM;
 
@@ -141,9 +143,22 @@ public String  cajaa2;
     public  int numeroInicio;
     public int idEstatu;
     public String folioEnviar;
-    public String cortaMesa;
 
-    public String idOrden;
+    public String idOrden="";
+
+    public String nombreMesa="Mesa ";
+    public String existeProducto;
+    public  int idEstatuHabilitado;
+    public  String mesa_id="";
+
+
+
+    public String estatusMesa;
+    public String existePrecio;
+    public String existeCantidad;
+
+
+    public String idMesa;// Solo obtiene el numero de la mesa ejemplo [2]
 
 
     private static Globales instance = new Globales();

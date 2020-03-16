@@ -26,6 +26,7 @@ public class ordenes extends AppCompatActivity {
     Button btnordennueva;
    //Button btnproductos;
     Button btnordencuenta;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -34,11 +35,13 @@ public class ordenes extends AppCompatActivity {
         btnordennueva = (Button) findViewById(R.id.btnordennueva);
         btnordencuenta=(Button) findViewById(R.id.btnordencuenta);
 
+
         btnordennueva.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent btnordennueva = new Intent(ordenes.this, Productos.class);
                 startActivity(btnordennueva);
+
             }
 
         });
@@ -58,6 +61,7 @@ public class ordenes extends AppCompatActivity {
         spinnerlistaEstatus.setOnItemSelectedListener(
                 new AdapterView.OnItemSelectedListener() {
                     public void onItemSelected(AdapterView<?> spn, View v, int posicion, long id) {
+
                         Toast.makeText(spn.getContext(), "Esatus: " + spn.getItemAtPosition(posicion).toString(), Toast.LENGTH_LONG).show();
                         if(contador!=0) {
                            // cargarProductosConCaracteristica();
@@ -69,15 +73,9 @@ public class ordenes extends AppCompatActivity {
                     public void onNothingSelected(AdapterView<?> spn) {
                     }
                 });
+      //  consul.MostrarOrdenesEnLaTabla(getApplicationContext());
     }
-    public void ExtraerDatos(Context context){
-        /*
-        TextView spn="";
-        if(contador==NULL){
-        }
-        Toast.makeText(spn.getContext(), "Datos: "+spn.getItemAtPosition(posicion).toString(), Toast.LENGTH_LONG).show();
-*/
-    }
+
 
 
 
