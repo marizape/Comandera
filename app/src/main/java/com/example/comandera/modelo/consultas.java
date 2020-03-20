@@ -52,10 +52,7 @@ public class consultas {
         conn = new ConexionSQLiteHelper(context);
         SQLiteDatabase db = conn.getWritableDatabase();
        // String mesa =" Mesa " +numeMesa;
-
-
         try {
-           // int variable= Integer.parseInt(cg_id);
             int variable= numeMesa;
             Cursor cursor2 =db.rawQuery("SELECT mesa_num from  mesa WHERE mesa_num="+variable , null);
             try {
@@ -343,10 +340,6 @@ public class consultas {
 
     }
 
-
-
-
-
     public String consultarIdMesa(Context contextO, String mesanum){
         ConexionSQLiteHelper conn;
         conn = new ConexionSQLiteHelper( contextO);
@@ -440,11 +433,42 @@ public class consultas {
         db.close();
     }
 
+    public int ConsultaIdOrden(Context contextO, String folio){
+        ConexionSQLiteHelper conn;
+        conn = new ConexionSQLiteHelper( contextO);
+        SQLiteDatabase db = conn.getWritableDatabase();
+        int id=0;
+        String ord_folio="";
+        int idOri=0;
+        int ord_id=0;
+        Cursor cursor2 =db.rawQuery("SELECT ord_folio, ord_id, mesa_fk FROM orden WHERE ord_folio='"+folio+"'", null);
+        try {
+
+            if (cursor2 != null) {
+                cursor2.moveToFirst();
+                int index = 0;
+                while (!cursor2.isAfterLast()) {
+                    String mesa_fk2= String.valueOf( cursor2.getString(cursor2.getColumnIndex("mesa_fk")));
+                    ord_folio= String.valueOf( cursor2.getString(cursor2.getColumnIndex("ord_folio")));
+                    ord_id= Integer.parseInt(cursor2.getString(cursor2.getColumnIndex("ord_id")));
+                    index++;
+                    cursor2.moveToNext();
+                }
+                if (index != 0) {
+                    id=ord_id;
+                }
+            }
+        }catch(Exception e){
+            Log.println(Log.ERROR,"",e.getMessage());
+        }
+        return id;
+    }
+
     public String ConsultaSiExisteFolioDeMesa(Context contextO, String mesa_fk){
         ConexionSQLiteHelper conn;
         conn = new ConexionSQLiteHelper( contextO);
         SQLiteDatabase db = conn.getWritableDatabase();
-       String fol="";
+        String fol="";
         String ord_folio="";
         int idOri=0;
         Cursor cursor2 =db.rawQuery("SELECT ord_folio, ord_id, mesa_fk FROM orden WHERE mesa_fk='"+mesa_fk+"'", null);
@@ -454,22 +478,67 @@ public class consultas {
                 int index = 0;
                 while (!cursor2.isAfterLast()) {
                     String mesa_fk2= String.valueOf( cursor2.getString(cursor2.getColumnIndex("mesa_fk")));
-                     ord_folio= String.valueOf( cursor2.getString(cursor2.getColumnIndex("ord_folio")));
+                    ord_folio= String.valueOf( cursor2.getString(cursor2.getColumnIndex("ord_folio")));
                     int ord_id= Integer.parseInt(cursor2.getString(cursor2.getColumnIndex("ord_id")));
                     index++;
                     cursor2.moveToNext();
                 }
                 if (index != 0) {
                     fol=ord_folio;
-
                 }
             }
-
-
         }catch(Exception e){
             Log.println(Log.ERROR,"",e.getMessage());
         }
         return fol;
     }
+
+    public void actualizarEstadoOrden(String ord_folio, Context contexto) {
+        ConexionSQLiteHelper conn = new ConexionSQLiteHelper(contexto);
+        SQLiteDatabase db = conn.getWritableDatabase();
+        consultaEstatusPorPreparar(contexto);
+        int esta_fk=Globales.getInstance().idEstatusPorPreparar;
+        db.execSQL("UPDATE orden SET esta_fk='"+esta_fk+"' WHERE ord_folio ='"+ord_folio+"'");
+        Toast.makeText(contexto, "   Orden con estado por preparar " , Toast.LENGTH_LONG).show();
+        db.close();
+    }
+
+    public void consultaEstatusPorPreparar(Context context) {
+        ConexionSQLiteHelper conn;
+        conn = new ConexionSQLiteHelper(context);
+        SQLiteDatabase db = conn.getReadableDatabase();
+        Cursor cursorEstatus = db.rawQuery("SELECT * FROM estatus WHERE estatus.esta_estatus='por preparar'", null);
+        try {
+            if (cursorEstatus != null) {
+                cursorEstatus.moveToFirst();
+                Globales.getInstance().idEstatusPorPreparar = cursorEstatus.getInt(cursorEstatus.getColumnIndex("esta_id"));
+            }
+            cursorEstatus.close();
+            db.close();
+        } catch (Exception e) {
+        }
+    }
+
+    public void IdDeLaOrdenABuscar(Context context ){
+        ConexionSQLiteHelper conn;
+        conn = new ConexionSQLiteHelper(context);
+        SQLiteDatabase db = conn.getReadableDatabase();
+        int varaux=Globales.getInstance().idDeLaOrdenABuscar;
+
+        Cursor cursorEstatus = db.rawQuery("SELECT ord_folio, ord_id FROM orden WHERE ord_id='"+varaux+"'", null);
+        try {
+            if (cursorEstatus != null) {
+                cursorEstatus.moveToFirst();
+                Globales.getInstance().folioEnviar = String.valueOf(cursorEstatus.getColumnIndex("ord_folio"));
+
+            }
+            cursorEstatus.close();
+            db.close();
+        } catch (Exception e) {
+        }
+
+    }
+
+
 }
 

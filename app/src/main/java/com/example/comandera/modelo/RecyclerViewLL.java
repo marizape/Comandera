@@ -124,7 +124,6 @@ public class RecyclerViewLL extends RecyclerView.Adapter<RecyclerViewLL.PaletteV
                     while (!cursor2.isAfterLast()) {
                         Globales.getInstance().vNumDoc2= String.valueOf( cursor2.getString(cursor2.getColumnIndex("doc_fk")));
                         Globales.getInstance().vExisteP2 = "existeElProducto";
-
                         index++;
                         cursor2.moveToNext();
                     }
@@ -150,12 +149,12 @@ public class RecyclerViewLL extends RecyclerView.Adapter<RecyclerViewLL.PaletteV
             final Ingresarsql sq = new Ingresarsql();
             Context contexto= view.getContext();
             String iden=id;
+            //String idOrden = Globales.getInstance().idOrden;
             String  precioE= String.valueOf( precio.getText());
-
             switch (view.getId()){
                 case  R.id.botonMasP:
-                    String ordet_cant="";   //cantidad de productos en el carrito
-                    sq.existeCanti(contexto,id);
+                   String ordet_cant="";   //cantidad de productos en el carrito
+                    sq.existeCanti(contexto,iden);
                     if(  Globales.getInstance().vExisteCantidad.equals("existeCantidad")){
                         int v= Integer.parseInt(Globales.getInstance().vCPE);
                         int ordet_cant1=  v+1;
@@ -172,18 +171,14 @@ public class RecyclerViewLL extends RecyclerView.Adapter<RecyclerViewLL.PaletteV
                     String prd_fk=iden; //  id del producto agregado al carrito
                   //  String ext_fk= "0"; //OFICIAL
 
-
                 //  String imp_fk ="0"; //OFICIAL
-
-
                     String f1=sq.generarFolio(contexto);
                   //  String f1= "123456789101";
                     System.out.println(" f1 "+ f1);
                     Globales.getInstance().folioVenta= f1;
                     Globales.getInstance().idFolio= f1;
 
-
-             /*       String ord_fecha=fecha();
+             /*     String ord_fecha=fecha();
                     String  ord_hora= hora();
                     String  ord_iva="0";//No oficial dato desconocido
                    // String  docd_cosind ="0"; //No oficial dato desconocido            costo indirecto           <

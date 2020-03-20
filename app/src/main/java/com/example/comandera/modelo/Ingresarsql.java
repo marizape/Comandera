@@ -15,11 +15,10 @@ import com.example.comandera.Globales;
 import static com.example.comandera.Productos.cuentaProductosC;
 import static com.example.comandera.clasificacionSeleccionada.cuentaProductos;
 
-
 public class Ingresarsql extends AppCompatActivity {
 
     public Long IdCliente = 12345678910L;
-
+    consultas consul= new consultas();
     String doc = Globales.getInstance().idDocUl;
 
     @Override
@@ -33,6 +32,7 @@ public class Ingresarsql extends AppCompatActivity {
         conn = new ConexionSQLiteHelper(contexto);
         SQLiteDatabase db = conn.getWritableDatabase();
         int actualizar = 0;
+
         String sqlTablaMoral = "insert into clasificacion(clas_nombre, clas_imagen) VALUES ('" + nombreClasificacion + "', '" + imagen + "')";
 
         try {
@@ -107,7 +107,7 @@ public class Ingresarsql extends AppCompatActivity {
                 TotalVenta = Double.parseDouble(cursor3.getString(cursor3.getColumnIndex("suma")));
                 db.execSQL("UPDATE documento SET doc_subtotal=" + TotalVenta + ",doc_total=" + TotalVenta + " WHERE doc_id=" + doc);
 
-                Toast.makeText(contexto, "Producto agregado al carrito.", Toast.LENGTH_SHORT).show();
+               // Toast.makeText(contexto, "Producto agregado al carrito.", Toast.LENGTH_SHORT).show();
             } else {
                 if (Globales.getInstance().vExisteP.equals("noExisteElProducto")) {
                     ultimoidoc(contexto, doc_folio);
@@ -127,7 +127,7 @@ public class Ingresarsql extends AppCompatActivity {
                         db.execSQL("UPDATE documento SET doc_subtotal=" + TotalVenta + ",doc_total=" + TotalVenta + " WHERE doc_id=" + doc);
                     }
 
-                    Toast.makeText(contexto, "Producto agregado al carrito.", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(contexto, "Producto agregado al carrito.", Toast.LENGTH_SHORT).show();
                 }
             }
 
@@ -296,29 +296,25 @@ public class Ingresarsql extends AppCompatActivity {
             Log.println(Log.ERROR, "", e.getMessage());
         }
     }
-
     public void contabilizaLosProdAgreCarr(Context context) {
         ConexionSQLiteHelper conn;
         conn = new ConexionSQLiteHelper(context);
         SQLiteDatabase db = conn.getReadableDatabase();
         consultaestatus(context);
-        //CAMBIAR
-        // String idu=  Globales.getInstance().id_usuario;// filtrar la informacion
-        String idu = Globales.getInstance().usuario;
         //consultaEmpresaEstableCaja(context,idu);
-        String est = Globales.getInstance().idEstablecimientoLau;
+        String ord_fk =Globales.getInstance().idOrden;
         ///Cursor cursor2 =db.rawQuery("select sum(docd_cantprod) as cantidadProductos FROM documento_det  INNER JOIN documento ON documento_det.doc_fk=documento.doc_id WHERE  doc_fk ="+doc+" and  esta_fk='4'", null);
         /*MODIFICADO POR MARILU*/
-        //   Cursor cursor2 =db.rawQuery("select sum(docd_cantprod) as cantidadProductos FROM documento_det  INNER JOIN documento ON documento_det.doc_fk=documento.doc_id WHERE    esta_fk='"+Globales.getInstance().idEstatusLau+"' and est_fk='"+est+"'", null);
-        Cursor cursor2 = db.rawQuery("select sum(ordet_cant) as cantidadProductos FROM orden_det  INNER JOIN orden ON orden_det.ord_fk=orden.ord_id  INNER JOIN mesa ON mesa.mesa_id= orden.mesa_fk ", null);//WHERE  orden_det.esta_fk='3'        and mesa.est_fk=''
-
+        //Cursor cursor2 =db.rawQuery("select sum(docd_cantprod) as cantidadProductos FROM documento_det  INNER JOIN documento ON documento_det.doc_fk=documento.doc_id WHERE    esta_fk='"+Globales.getInstance().idEstatusLau+"' and est_fk='"+est+"'", null);
+        //Cursor cursor2 = db.rawQuery("select sum(ordet_cant) as cantidadProductos FROM orden_det  INNER JOIN orden ON orden_det.ord_fk=orden.ord_id  INNER JOIN mesa ON mesa.mesa_id= orden.mesa_fk ", null);//WHERE  orden_det.esta_fk='3'        and mesa.est_fk=''
+        Cursor cursor2 = db.rawQuery("select sum(ordet_cant) as cantidadProductos FROM orden_det  INNER JOIN orden ON orden_det.ord_fk=orden.ord_id  INNER JOIN mesa ON mesa.mesa_id= orden.mesa_fk WHERE ord_fk='"+ord_fk+"'", null);//WHERE  orden_det.esta_fk='3'   and mesa.est_fk=''
         try {
             if (cursor2 != null) {
-
                 cursor2.moveToFirst();
                 int index = 0;
-                while (!cursor2.isAfterLast()) {
-                    String id = String.valueOf(cursor2.getString(cursor2.getColumnIndex("cantidadProductos")));
+                while (!cursor2.isAfterLast()){
+                    String id=String.valueOf(cursor2.getString(cursor2.getColumnIndex("cantidadProductos")));
+
                     if (id.equals("null")) {
                         cuentaProductosC.setText("0");
                         cuentaProductos.setText("0");
@@ -491,9 +487,9 @@ public class Ingresarsql extends AppCompatActivity {
         conn = new ConexionSQLiteHelper(contexto);
         SQLiteDatabase db = conn.getReadableDatabase();
         String id = "";
-
-        // Cursor cursor2 =db.rawQuery("SELECT prd_fk,docd_cantprod,doc_fk FROM documento_det WHERE prd_fk ='"+query+"' and doc_fk ="+doc , null);
-        Cursor cursor2 = db.rawQuery("SELECT prepro_fk,ordet_cant,ord_fk FROM orden_det WHERE prepro_fk ='" + query + "' and ord_fk =" + doc, null);
+       // String idOrden = Globales.getInstance().idOrden;
+        //Cursor cursor2 =db.rawQuery("SELECT prd_fk,docd_cantprod,doc_fk FROM documento_det WHERE prd_fk ='"+query+"' and doc_fk ="+doc , null);
+        Cursor cursor2 = db.rawQuery("SELECT prepro_fk,ordet_cant,ord_fk FROM orden_det WHERE prepro_fk ='" + query + "' and ord_fk =" + "'"+doc+"'", null);
         try {
             if (cursor2 != null) {
                 cursor2.moveToFirst();
@@ -502,7 +498,6 @@ public class Ingresarsql extends AppCompatActivity {
                     //Globales.getInstance().vCPE= String.valueOf( cursor2.getString(cursor2.getColumnIndex("docd_cantprod")));
                     Globales.getInstance().vCPE = String.valueOf(cursor2.getString(cursor2.getColumnIndex("ordet_cant")));
                     Globales.getInstance().vExisteCantidad = "existeCantidad";
-
                     index++;
                     cursor2.moveToNext();
                 }
@@ -772,11 +767,11 @@ public class Ingresarsql extends AppCompatActivity {
         }
     }
 
-    public void consultaestatusPorPagar(Context context) {
+    public void consultaEstatusPorPagar(Context context) {
         ConexionSQLiteHelper conn;
         conn = new ConexionSQLiteHelper(context);
         SQLiteDatabase db = conn.getReadableDatabase();
-        Cursor cursorEstatus = db.rawQuery("SELECT * FROM estatus WHERE estatus.esta_estatus='Por pagar'", null);
+        Cursor cursorEstatus = db.rawQuery("SELECT * FROM estatus WHERE estatus.esta_estatus='por pagar'", null);
         try {
             if (cursorEstatus != null) {
                 cursorEstatus.moveToFirst();
@@ -789,11 +784,11 @@ public class Ingresarsql extends AppCompatActivity {
     }
 
 
-    public void consultaestatusPagado(Context context) {
+    public void consultaEstatusPagada(Context context) {
         ConexionSQLiteHelper conn;
         conn = new ConexionSQLiteHelper(context);
         SQLiteDatabase db = conn.getReadableDatabase();
-        Cursor cursorEstatus = db.rawQuery("SELECT * FROM estatus WHERE estatus.esta_estatus='Pagado'", null);
+        Cursor cursorEstatus = db.rawQuery("SELECT * FROM estatus WHERE estatus.esta_estatus='pagada'", null);
         try {
             if (cursorEstatus != null) {
                 cursorEstatus.moveToFirst();
@@ -1057,69 +1052,45 @@ public class Ingresarsql extends AppCompatActivity {
     }
 
     public void registrarVenta(Context contexto, String ordet_cant, String ordet_precio, String ordet_importe, String ordet_observa, String prepro_fk, String esta_fk_ordet, String ord_folio, String ord_fecha, String ord_hora, String ord_total, String ord_iva, String mesa_fk, String cjus_fk, String esta_fk_ord) {
-        /*
-        ConexionSQLiteHelper conn;
-        conn=new ConexionSQLiteHelper(contexto);
-        SQLiteDatabase db = conn.getWritableDatabase();
-        mesa_fk="1";
-        String ord_fk="1";
-        String ord_subtotal="6";
-        String  sqlOrden ="INSERT INTO orden (ord_folio,ord_fecha,ord_hora,ord_total,ord_subtotal,ord_iva,mesa_fk,cjus_fk,esta_fk)VALUES('"+ord_folio+"','"+ord_fecha+"','"+ord_hora+"','"+ord_total+"','"+ord_subtotal+"','"+ord_iva+"','"+mesa_fk+"','"+cjus_fk+"','"+esta_fk_ord+"')" ;
-        String  OrdenDetallada ="INSERT INTO orden_det(ordet_cant,ordet_precio, ordet_importe, ordet_observa,ord_fk,prepro_fk,esta_fk) VALUES ('"+ordet_cant+"','"+ordet_precio+"','"+ordet_importe+"','"+ordet_observa+"','"+ord_fk+"','"+prepro_fk+"','"+esta_fk_ordet+"')" ;
-        try {
-            db.execSQL(sqlOrden);
-            db.execSQL(OrdenDetallada);
-            //Toast.makeText(contexto, "venta registrado. " , Toast.LENGTH_LONG).show();
-            db.close();
-        }catch(Exception e){
-            System.out.println("  Error  " + e.getMessage());
-        }*/
-
         ConexionSQLiteHelper conn;
         conn = new ConexionSQLiteHelper(contexto);
         SQLiteDatabase db = conn.getWritableDatabase();
 
-        //mesa_fk="1";
-       // String mesa = Globales.getInstance().ordenN;
-       // String ord_fk = "1";
-       // String ord_subtotal = "6";
         try {
             String folio = Globales.getInstance().folioEnviar;
             if (folio.length() != 0) {
                 String validaSiExisteUnIdOrden = Globales.getInstance().idOrden;
                 if (validaSiExisteUnIdOrden.length() != 0)//si la variable idOrden  tiene algo significa que  existe ya una orden creada
                 {
-                   String idOrden = Globales.getInstance().idOrden;
+                    int idOrden=consul.ConsultaIdOrden(contexto,folio);
+                  // String idOrden = Globales.getInstance().idOrden;
                     String OrdenDetallada = "INSERT INTO orden_det(ordet_cant,ordet_precio, ordet_importe, ordet_observa,ord_fk,prepro_fk,esta_fk) VALUES ('" + ordet_cant + "','" + ordet_precio + "','" + ordet_importe + "','" + ordet_observa + "','" + idOrden + "','" + prepro_fk + "','" + esta_fk_ordet + "')";
                     db.execSQL(OrdenDetallada);
-                    System.out.println(" siExisteUnIdOrden " + OrdenDetallada);
+
                 } else {///cuando se crea por primera vez una venta
                     String sqlOrden = "INSERT INTO orden (ord_folio,ord_fecha,ord_hora,ord_total,ord_subtotal,ord_iva,mesa_fk,cjus_fk,esta_fk)VALUES('" + ord_folio + "','" + ord_fecha + "','" + ord_hora + "','" + ord_total + "','" + ord_total + "','" + ord_iva + "','" + mesa_fk + "','" + cjus_fk + "','" + esta_fk_ord + "')";
                     db.execSQL(sqlOrden);
-                    String idOrden = consultaIdOrden(contexto, folio);
+                    String idOrden =consultaIdOrden(contexto, folio);
                     Globales.getInstance().idOrden = idOrden;
                     String OrdenDetallada = "INSERT INTO orden_det(ordet_cant,ordet_precio, ordet_importe, ordet_observa,ord_fk,prepro_fk,esta_fk) VALUES ('" + ordet_cant + "','" + ordet_precio + "','" + ordet_importe + "','" + ordet_observa + "','" + idOrden + "','" + prepro_fk + "','" + esta_fk_ordet + "')";
                     db.execSQL(OrdenDetallada);
                 }
                 ////////
                 // Existe el producto
-
                 existeProducto(contexto,prepro_fk);
                     if (Globales.getInstance().existeProducto.equals("Existe el producto")) {
                         Double cantidad = Double.valueOf(ordet_cant);
                         Double precioUnitario = Double.valueOf(ordet_importe);
                         Double total = cantidad * precioUnitario;
-                        db.execSQL("UPDATE orden_det SET ordet_cant=" + cantidad + ",ordet_importe=" + total);
-                        Toast.makeText(contexto, "Producto agregado", Toast.LENGTH_SHORT).show();
+                        String ord_fk= Globales.getInstance().idOrden;
+                        db.execSQL("UPDATE orden_det SET ordet_cant=" + cantidad + ",ordet_importe=" + total +" WHERE prepro_fk='"+prepro_fk+"' and ord_fk ="+ord_fk);
+                       //Toast.makeText(contexto, "Producto agregado", Toast.LENGTH_SHORT).show();
                         Double TotalVenta = 0.0;
-
-                       String ord_fk= Globales.getInstance().idOrden ;
                         Cursor cursor3 = db.rawQuery("SELECT SUM(ordet_importe) as suma FROM orden_det WHERE orden_det.ord_fk = " + ord_fk, null);
                         cursor3.moveToFirst();
                         TotalVenta = Double.parseDouble(cursor3.getString(cursor3.getColumnIndex("suma")));
                         db.execSQL("UPDATE orden SET ord_subtotal=" + TotalVenta + ",ord_total=" + TotalVenta + " WHERE ord_id=" + ord_fk);
                     } else {
-
                     if (Globales.getInstance().existeProducto.equals("noExiate producto")) {
 
                         // String OrdenDetallada="";
@@ -1129,68 +1100,10 @@ public class Ingresarsql extends AppCompatActivity {
                         System.out.println("Datos insertados" + OrdenD);*/
                     }
                 }
-/*
-                if (Globales.getInstance().existeCantidad.equals("Existe Cantidad")) {
-                    String cantidad = "";
-                    String Orden = ("UPDATE orden_det SET ordet_cant=+cantidad WHERE ordet_id='1'");
-                    db.execSQL(Orden);
-                } else {
-                    if (Globales.getInstance().existeCantidad.equals("noExisteCantidad")) {
-                        String cantidad = "";
-                        String OrdenDetallada = "UPDATE orden_det SET ordet_precio='60'+cantidad WHERE ordet_id='1'";
-                        db.execSQL(OrdenDetallada);
-                    }
-                }
-                if (Globales.getInstance().existePrecio.equals("Existe Precio")) {
-                    String precio = "";
-                    String OrdenPrecio = ("UPDATE orden_det SET ordet_precio='3' WHERE ordet_id='1'");
-                    db.execSQL(OrdenPrecio);
-                } else {
-                    String precio = "";*/
-                   /*String OPrecio=(); modificar con una inserccion de precio
-                    db.execSQL(OPrecio);*/
-                   /* String oPrecio = "UPDATE orden_det SET ordet_precio='3' WHERE ordet_id='1'";
-                    db.execSQL(oPrecio);
-                }*/
-                /////////
+
 
             } else {
             }
-
-
-
-        /*    else
-            {
-                if(Globales.getInstance().existeProducto.equals("noExiate producto")){
-
-                }
-            }*/
-
-          /*  if(Globales.getInstance().existeCantidad.equals("Existe Cantidad")){
-
-                String Orden=("UPDATE orden_det SET ordet_cant='3' WHERE ordet_id='1'");
-                db.execSQL(Orden);
-            }else {
-                if(Globales.getInstance().existeCantidad.equals("noExisteCantidad")){
-
-                    String OrdenDetallada ="UPDATE orden_det SET ordet_precio='60' +cantidad WHERE ordet_id='1'";
-                    db.execSQL(OrdenDetallada);
-                }
-            }
-            if(Globales.getInstance().existePrecio.equals("Existe Precio")){
-                String precio="";
-                String OrdenPrecio=("UPDATE orden_det SET ordet_precio='3' WHERE ordet_id='1'");
-                db.execSQL(OrdenPrecio);
-            }else {
-                String precio="";
-                   /*String OPrecio=(); modificar con una inserccion de precio
-                    db.execSQL(OPrecio);*/
-           /*     String oPrecio="UPDATE orden_det SET ordet_precio='3' WHERE ordet_id='1'";
-                db.execSQL(oPrecio);
-            }*/
-            /////////
-
-            //Toast.makeText(contexto, "venta registrado. " , Toast.LENGTH_LONG).show();
             db.close();
         } catch (Exception e) {
             System.out.println("  Error  " + e.getMessage());
@@ -1236,7 +1149,7 @@ public class Ingresarsql extends AppCompatActivity {
         conn = new ConexionSQLiteHelper(context);
         SQLiteDatabase db = conn.getReadableDatabase();
         Cursor cursor2 = db.rawQuery("select ord_folio,ord_id from orden where  ord_folio=" + folio, null);
-        String id = "", ord_folio = "";
+        String id = "",ord_folio = "";
         String idOrden = "";
         try {
             if (cursor2 != null) {
@@ -1267,8 +1180,6 @@ public class Ingresarsql extends AppCompatActivity {
         conn = new ConexionSQLiteHelper(contexto);
         SQLiteDatabase db = conn.getReadableDatabase();
         String id = "";
-
-
         String idOrden =Globales.getInstance().idOrden ;
         //Cursor cursor2 =db.rawQuery("SELECT prd_fk,docd_cantprod,doc_fk FROM documento_det WHERE prd_fk ='"+query+"' and doc_fk ="+doc , null);
         Cursor cursor2 = db.rawQuery("SELECT prepro_fk,ordet_cant,ord_fk FROM orden_det WHERE prepro_fk='" + query + "' and ord_fk='" + idOrden+ "'", null);
@@ -1296,6 +1207,52 @@ public class Ingresarsql extends AppCompatActivity {
 
     }
 
+    public void consultarEstatusSolicitado(Context context) {
+        ConexionSQLiteHelper conn;
+        conn = new ConexionSQLiteHelper(context);
+        SQLiteDatabase db = conn.getReadableDatabase();
+        Cursor cursorEstatus = db.rawQuery("SELECT * FROM estatus WHERE estatus.esta_estatus='solicitada'", null);
+        try {
+            if (cursorEstatus != null) {
+                cursorEstatus.moveToFirst();
+                Globales.getInstance().idEstatusSolicitada = cursorEstatus.getInt(cursorEstatus.getColumnIndex("esta_id"));
+            }
+            cursorEstatus.close();
+            db.close();
+        } catch (Exception e) {
+        }
+    }
 
+    public void consultaEstatusEnProceso(Context context) {
+        ConexionSQLiteHelper conn;
+        conn = new ConexionSQLiteHelper(context);
+        SQLiteDatabase db = conn.getReadableDatabase();
+        Cursor cursorEstatus = db.rawQuery("SELECT * FROM estatus WHERE estatus.esta_estatus='en proceso'", null);
+        try {
+            if (cursorEstatus != null) {
+                cursorEstatus.moveToFirst();
+                Globales.getInstance().idEstatusEnProceso = cursorEstatus.getInt(cursorEstatus.getColumnIndex("esta_id"));
+            }
+            cursorEstatus.close();
+            db.close();
+        } catch (Exception e) {
+        }
+    }
+
+    public void consultaEstatusPreparado(Context context) {
+        ConexionSQLiteHelper conn;
+        conn = new ConexionSQLiteHelper(context);
+        SQLiteDatabase db = conn.getReadableDatabase();
+        Cursor cursorEstatus = db.rawQuery("SELECT * FROM estatus WHERE estatus.esta_estatus='preparado'", null);
+        try {
+            if (cursorEstatus != null) {
+                cursorEstatus.moveToFirst();
+                Globales.getInstance().preparado = cursorEstatus.getInt(cursorEstatus.getColumnIndex("esta_id"));
+            }
+            cursorEstatus.close();
+            db.close();
+        } catch (Exception e) {
+        }
+    }
 
 }

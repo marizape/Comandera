@@ -110,7 +110,6 @@ public class GridAdapterProductos extends BaseAdapter  {
             convertView = layoutInflater.inflate(R.layout.list_rowsproductoscs, null);
             holder = new ViewHolder();
 
-
             ProductosDatos productos= arrayList.get(position);
             final TextView tituloTv = convertView.findViewById(R.id.nombre);
             tituloTv.setText(productos.getNombreProducto());
@@ -154,22 +153,16 @@ public class GridAdapterProductos extends BaseAdapter  {
                     String v3= productos.getClasificacion();
                     ImageView imageView =  finalConvertView.findViewById(R.id.imagen);
                     imageView.setImageBitmap(productos.getImagenProductoe());
-
                     TextView presentacion= finalConvertView.findViewById(R.id.presentacionProducto);
                     presentacion.setText(productos.getPresentacion());
                     String pre=productos.getPresentacion();
-
-
                     TextView id= finalConvertView.findViewById(R.id.idid);
                     id.setText(productos.getId());
                     String id4= productos.getId();
-
-
                     final Ingresarsql sq = new Ingresarsql();
                     Context contexto= view.getContext();
                     final String iden=id.getText().toString();
                     String  ordet_precio= String.valueOf( precio.getText());
-
                     String ordet_cant="";   //cantidad de productos en el carrito
                     sq.existeCanti(contexto,id.getText().toString());
                     if(  Globales.getInstance().vExisteCantidad.equals("existeCantidad")){
@@ -177,7 +170,7 @@ public class GridAdapterProductos extends BaseAdapter  {
                         int ordet_cant1=  v+1;
                         ordet_cant= String.valueOf(ordet_cant1);
                     }else {
-                        if(  Globales.getInstance().vExisteCantidad.equals("noExisteCantidad")) {
+                        if(  Globales.getInstance().vExisteCantidad.equals("noExisteCantidad")){
                             ordet_cant= "1";
                         }
                     }
@@ -189,14 +182,14 @@ public class GridAdapterProductos extends BaseAdapter  {
                     String  ordet_observa="";//OFICIAL
                     String ord_total=String.valueOf( precio.getText());
                     String cjus_fk= Globales.getInstance().idCajaLau;
-
                     String est_fk= Globales.getInstance().idEstablecimientoLau;
-                    sq.consultaestatus(contexto);
-                    String esta_fk_ordet=String.valueOf(Globales.getInstance().idEstatusLau);//OFICIAL
+
+                    sq.consultarEstatusSolicitado(contexto);
+                    String esta_fk_ordet=String.valueOf(Globales.getInstance().idEstatusSolicitada);//OFICIAL
 
 
-                    sq.consultaestatus(contexto);
-                    String esta_fk_ord=String.valueOf(Globales.getInstance().idEstatusLau);//OFICIAL
+                    sq.consultaEstatusEnProceso(contexto);
+                    String esta_fk_ord=String.valueOf(Globales.getInstance().idEstatusEnProceso);//OFICIAL
 
                    // String ord_folio=sq.generarFolio(contexto);
                    // String ord_folio=consul.generarFolio();
@@ -204,13 +197,10 @@ public class GridAdapterProductos extends BaseAdapter  {
                     String ord_folio=Globales.getInstance().folioEnviar;
                    //Toast.makeText(context,"ord_folio" +ord_folio,Toast.LENGTH_LONG).show();
                     String mesa=Globales.getInstance().idMesa;
-
+                    String ord_fk=Globales.getInstance().idOrden;
                     String mesa_fk=consul.consultarIdMesa(contexto,mesa);
-
-
-                    Toast.makeText(contexto,"11111111",Toast.LENGTH_LONG).show();
                     sq.registrarVenta(contexto,ordet_cant,ordet_precio, ordet_importe, ordet_observa,prepro_fk,esta_fk_ordet,ord_folio,ord_fecha,ord_hora,ord_total,ord_iva,mesa_fk,cjus_fk,esta_fk_ord);
-                    Toast.makeText(contexto,"222222222222",Toast.LENGTH_LONG).show();
+                   // Toast.makeText(contexto,"222222222222",Toast.LENGTH_LONG).show();
                   //sq.registrarVentaProceso(ordet_cant,docd_preccom, docd_descuento,prepro_fk,ext_fk, ordet_import ,Globales.getInstance().idFolio, ord_fecha,ord_hora, ord_iva ,docd_cosind ,ordet_observa,doc_saldo,prs_fk,usr_fk,cjus_fk,est_fk,esta_fk,tpd_fk,contexto);
                     sq.contabilizaLosProdAgreCarr(contexto);
 

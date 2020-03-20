@@ -38,6 +38,7 @@ import com.example.comandera.modelo.Ingresarsql;
 import com.example.comandera.modelo.ProductosDatos;
 import com.example.comandera.modelo.RecyclerViewClasificacion;
 import com.example.comandera.modelo.RecyclerViewLL;
+import com.example.comandera.modelo.consultas;
 
 
 import org.json.JSONArray;
@@ -54,7 +55,7 @@ import java.util.List;
 
 public class Productos extends AppCompatActivity {
     //  Button canclar;
-
+    consultas consul= new consultas();
     EditText busqueda,thide;
     int[] ids= new int[100];
     ImageButton botonBuscar;
@@ -85,7 +86,6 @@ public class Productos extends AppCompatActivity {
         botonTeclado= findViewById(R.id.btnTeclado);
         botonTecladoOculto= findViewById(R.id.btnTecladoOculto);
 
-
         conn=new ConexionSQLiteHelper(getApplicationContext());
         imageView5= findViewById(R.id.imageView5);
         separador= findViewById(R.id.separador);
@@ -96,8 +96,20 @@ public class Productos extends AppCompatActivity {
 
         ocupacionmesa= findViewById(R.id.ocupacionmesa);
 
-        String nommesa=Globales.getInstance().ordenN;
+        String nommesa=Globales.getInstance().idMesa;
         ocupacionmesa.setText(nommesa);
+
+
+
+        String vari= String.valueOf(Globales.getInstance().idDeLaOrdenABuscar);
+        if( vari.length()!=0){
+            consul.IdDeLaOrdenABuscar(getApplicationContext());
+
+            String nommesa2=Globales.getInstance().idMesa;
+            ocupacionmesa.setText(nommesa2);
+        }
+
+
 
         layoutManager = new LinearLayoutManager(this);
         recyclerViewClasificacionProductos.setLayoutManager(layoutManager);
@@ -143,7 +155,6 @@ public class Productos extends AppCompatActivity {
 
             }
         });
-
         regresar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -151,7 +162,6 @@ public class Productos extends AppCompatActivity {
                 startActivity(new Intent(Productos.this, clasificacionSeleccionada.class));
             }
         });
-
         busqueda.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -172,12 +182,11 @@ public class Productos extends AppCompatActivity {
             }
         });
 
-
         botonBuscar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 sq.contabilizaLosProdAgreCarr(getApplicationContext());
-                buscarProducto();
+               // buscarProducto();
                 String query = busqueda.getText().toString();
                 if(query.equals("")){
                     cargarClasificaciones();
@@ -231,7 +240,9 @@ public class Productos extends AppCompatActivity {
             }
         });
 */
-       cargarClasificaciones();
+
+        cargarClasificaciones();
+
         // getJSON("https://www.nextcom.com.mx/webserviceapp/koonol/Consulta_clasificacion.php");
 
 
@@ -241,12 +252,9 @@ public class Productos extends AppCompatActivity {
 
         fol= findViewById(R.id.fol);
         doc= findViewById(R.id.fol2);
-
         fol.setText(Globales.getInstance().idFolio);
         doc.setText(Globales.getInstance().idDocUl);
-
-
-
+        sq.contabilizaLosProdAgreCarr(getApplicationContext());
 
     }
 
@@ -322,12 +330,11 @@ public class Productos extends AppCompatActivity {
 
     private void cargarClasificaciones() {
 
-//        sq.contabilizaLosProdAgreCarr(getApplicationContext());
+        //sq.contabilizaLosProdAgreCarr(getApplicationContext());
         SQLiteDatabase db = conn.getReadableDatabase();
         List<String> list3 = new ArrayList<String>();
         final List<ClasificacionDatos> listclientes = new ArrayList<ClasificacionDatos>();
         listclientes.clear();
-
         Cursor cursor2 =db.rawQuery("select * from clasificacion", null);
         try {
             if (cursor2 != null) {
@@ -338,30 +345,19 @@ public class Productos extends AppCompatActivity {
                     String idClas= String.valueOf( cursor2.getString(cursor2.getColumnIndex("clas_id")));
                     String nombreClas= String.valueOf( cursor2.getString(cursor2.getColumnIndex("clas_nombre")));
                     byte[] blob = cursor2.getBlob(cursor2.getColumnIndex("clas_imagen"));
-
-
                     ByteArrayInputStream bais = new ByteArrayInputStream(blob);
                     bitmap = BitmapFactory.decodeStream(bais);
-
                     listclientes.add(new ClasificacionDatos(bitmap, nombreClas,idClas));
                     index++;
                     cursor2.moveToNext();
-
-
-
                 }
                 if (index != 0) {
-
-
                     ///////////////1 CC
-
                     final RecyclerViewClasificacion adaptador = new RecyclerViewClasificacion((ArrayList<ClasificacionDatos>) listclientes);
                     adaptador.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
                             Log.i("DemoRecView", "Pulsado el elemento " + recyclerViewClasificacionProductos.getChildAdapterPosition(v));
-
-
                             int elemen=   recyclerViewClasificacionProductos.getChildAdapterPosition(v);
                             System.out.println(" Pulsado el elemento    " + listclientes.get(elemen).getNombreClasificacion());
                             String nombreclasificacion= listclientes.get(elemen).getNombreClasificacion();
@@ -383,10 +379,18 @@ public class Productos extends AppCompatActivity {
     }
 
     public void onBackPressed() {
-        finish();
+     /*   finish();
         Intent intencion2 = new Intent(getApplication(), disponibilidadmesas.class);
-        startActivity(intencion2);
-
+        startActivity(intencion2);*/
+        if(Globales.getInstance().regresarOrdenes==1){
+            finish();
+            startActivity(new Intent(getApplicationContext(),ordenes.class));
+            Globales.getInstance().regresarOrdenes=0;
+        }else {
+            Intent intencion2 = new Intent(getApplication(), disponibilidadmesas.class);
+            startActivity(intencion2);
+            finish();
+        }
     }
 
     public  boolean onOptionsItemSelected(MenuItem item){
@@ -483,7 +487,7 @@ public class Productos extends AppCompatActivity {
                     recyclerViewClasificacionProductos.addItemDecoration(
                             new DividerItemDecoration(this,DividerItemDecoration.VERTICAL));
                 }
-                else { Toast.makeText(Productos.this,"No hay concidencias",Toast.LENGTH_SHORT).show(); }
+                else { Toast.makeText(Productos.this,"No hay concidencias5",Toast.LENGTH_SHORT).show(); }
             }
         }catch(Exception e){
             Log.println(Log.ERROR,"",e.getMessage()); }

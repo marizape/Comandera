@@ -84,17 +84,11 @@ public class MostrarVentas extends AppCompatActivity implements ProductoAdapter.
             @Override
            public void onClick(View v) {
                 // Envia los productos en la tabla ordenes
-
-                agregar = (Button) findViewById(R.id.btnenviarOrden);
-                agregar.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Intent btnenviarOrden = new Intent(MostrarVentas.this, ordenes.class);
-                        startActivity(btnenviarOrden);
-                        finish();
-
-                    }
-                });
+                String folio=Globales.getInstance().folioEnviar;
+                consul.actualizarEstadoOrden(folio,getApplicationContext());//estado por preprar
+                Intent btnenviarOrden = new Intent(MostrarVentas.this, ordenes.class);
+                startActivity(btnenviarOrden);
+                finish();
               //  String ord_folio=consul.generarFolio();
                // String s="Mesa";
               //  System.out.println(s.substring(0,4));
@@ -114,10 +108,9 @@ public class MostrarVentas extends AppCompatActivity implements ProductoAdapter.
                         //if user pressed "yes", then he is allowed to exit from application
                         SQLiteDatabase db = conn.getReadableDatabase();
                         Cursor cursorC = db.rawQuery("DELETE FROM orden_det WHERE orden_det.ord_fk ="+Globales.getInstance().idDetalle, null);
-                       // Cursor cursorC2 = db.rawQuery("DELETE FROM orden WHERE ord.ord_id="+Globales.getInstance().idDetalle, null);
-
+                       //Cursor cursorC2 = db.rawQuery("DELETE FROM orden WHERE ord.ord_id="+Globales.getInstance().idDetalle, null);
                         cursorC.moveToFirst();
-                       // cursorC2.moveToFirst();
+                       //cursorC2.moveToFirst();
                         finish();
                         startActivity(new Intent(getApplicationContext(), disponibilidadmesas.class));
                         Toast.makeText(MostrarVentas.this, "Captura cancelado...", Toast.LENGTH_SHORT).show();
@@ -149,8 +142,6 @@ public class MostrarVentas extends AppCompatActivity implements ProductoAdapter.
 
     }
 
-
-
     //CONSULTA A BD PARA OBTENER LOS PRODUCTOS DEL X VENTA
     private void consultaSQL2() {
         productos.clear();
@@ -159,7 +150,7 @@ public class MostrarVentas extends AppCompatActivity implements ProductoAdapter.
         Cursor cursor2 =db.rawQuery("SELECT ord_id, ord_folio,ordet_cant, prst_descripcion,ordet_importe,ordet_precio, ord_total,ordet_observa, prd_nombre, prd_imagen, prepro_precompra, orden_det.prepro_fk\n" +
                 "FROM estatus, orden, orden_det, producto, prest_prod\n" +
                 "INNER JOIN presentacion ON presentacion.prst_id = prest_prod.prst_fk   \n" +
-                "WHERE estatus.esta_estatus='por preparar' AND orden.esta_fk=estatus.esta_id  \n" +
+                "WHERE estatus.esta_estatus='en proceso' AND orden.esta_fk=estatus.esta_id  \n" +
                 "AND orden.ord_id = orden_det.ord_fk \n" +
                 "AND orden_det.prepro_fk = prest_prod.prepro_id   \n" +
                 "AND prest_prod.prd_fk = producto.prd_id", null);
@@ -168,7 +159,7 @@ public class MostrarVentas extends AppCompatActivity implements ProductoAdapter.
                 cursor2.moveToFirst();
                 int index = 0;
                 Bitmap bitmap = null;
-                while (!cursor2.isAfterLast()) {
+                while (!cursor2.isAfterLast()){
 /*
                     folioVenta = cursor2.getString(cursor2.getColumnIndex("doc_folio"));
                     Globales.getInstance().idVentaPrevia = folioVenta;
@@ -219,7 +210,6 @@ public class MostrarVentas extends AppCompatActivity implements ProductoAdapter.
                     index++;
                     cursor2.moveToNext();
                 }
-
                 if (index != 0) {
                     recyclerView.setAdapter(adaptaProdsLista);
                 }else {
@@ -290,14 +280,12 @@ public class MostrarVentas extends AppCompatActivity implements ProductoAdapter.
         if (Globales.getInstance().operacion == 0){
             if(cadena.trim().equals("")){
                 cadena = "0";
-
             }
             Globales.getInstance().cantiOperacion = Integer.valueOf(cadena);
             consultaSQL3("cambia");
         }
         Globales.getInstance().operacion = 0;
     }
-
     @Override
     public void elimi( int posicion) {
         if (productos.size() == 1){
@@ -310,10 +298,11 @@ public class MostrarVentas extends AppCompatActivity implements ProductoAdapter.
                 public void onClick(DialogInterface dialog, int which) {
                     //if user pressed "yes", then he is allowed to exit from application
                     SQLiteDatabase db = conn.getReadableDatabase();
-                    Cursor cursorC = db.rawQuery("DELETE FROM orden_det WHERE orden_det.ord_fk ="+Globales.getInstance().idDetalle, null);
-                 //   Cursor cursorC2 = db.rawQuery("DELETE FROM orden WHERE orden.ord_id="+Globales.getInstance().idDetalle, null) borraTodo
+                   //Cursor cursorC = db.rawQuery("DELETE FROM orden_det WHERE orden_det.ord_fk ="+Globales.getInstance().idDetalle, null);
+                    Cursor cursorC = db.rawQuery("DELETE FROM orden_det WHERE orden_det.ord_fk ="+Globales.getInstance().idOrden, null);
+                 //Cursor cursorC2 = db.rawQuery("DELETE FROM orden WHERE orden.ord_id="+Globales.getInstance().idDetalle, null) borraTodo
                     cursorC.moveToFirst();
-                   // cursorC2.moveToFirst();
+                    //cursorC2.moveToFirst();
                     finish();
                     startActivity(new Intent(getApplicationContext(), disponibilidadmesas.class));
                     Toast.makeText(MostrarVentas.this, "Captura cancelado...", Toast.LENGTH_SHORT).show();
@@ -347,10 +336,7 @@ public class MostrarVentas extends AppCompatActivity implements ProductoAdapter.
         Globales.getInstance().idProducto = productsID[posicion];
         consultaSQL3("disminuir");
         Globales.getInstance().operacion = 1;
-
     }
-
-
    /* @Override
     public void escribe( int posicion) {
 
@@ -359,7 +345,6 @@ public class MostrarVentas extends AppCompatActivity implements ProductoAdapter.
         Globales.getInstance().operacion = 1;
 
     }*/
-
     private void consultaSQL3(String tipo) {
         int cantotal=0;
         SQLiteDatabase db = conn.getReadableDatabase();
@@ -371,27 +356,21 @@ public class MostrarVentas extends AppCompatActivity implements ProductoAdapter.
         try {
             if (cursor2 != null) {
                 cursor2.moveToFirst();
-                int index = 0;
-
-
-                int index2=index;
-
-                System.out.println(""+index2);
-
-
+                int index= 0;
+               // int index2=index;
+             //   System.out.println(""+index2);
                 while (!cursor2.isAfterLast()) {
                     precioUnitario2 = Double.parseDouble(cursor2.getString(cursor2.getColumnIndex("prepro_precompra")));
                     cant2= cursor2.getInt(cursor2.getColumnIndex("ordet_cant"));
+
                     //cant2= cursor2.getInt(cursor2.getColumnIndex("docd_cantprod"));
                     index++;
                     cursor2.moveToNext();
                 }
                 if (tipo == "aumentar"){
                     cantotal = cant2+1;
-
                 }else if (tipo == "disminuir"){
                     cantotal = cant2-1;
-
                 }/*else if(tipo == "cambia"){
                     cantotal = Globales.getInstance().cantiOperacion; DELETE FROM orden_det WHERE orden_det.ord_fk ='3' AND orden_det.prepro_fk='1'
                     //Cursor cursorE=db.rawQuery("DELETE FROM documento_det WHERE documento_det.doc_fk ="+Globales.getInstance().idDetalle+" AND documento_det.prepro_fk="+Globales.getInstance().idProducto, null);
@@ -403,14 +382,10 @@ public class MostrarVentas extends AppCompatActivity implements ProductoAdapter.
                 if (cantotal <= 0){
                     cantotal = 0;
                 }
-
+                int conta=0;
                 Globales.getInstance().canTotal = cantotal;//1
                 toTal2 = precioUnitario2*cantotal;//0.0
-
-                System.out.println("lalala"+toTal2);
-
-
-
+                conta++;
                 Globales.getInstance().subTotal=toTal2;
                 db2.execSQL("UPDATE orden_det SET ordet_cant = "+cantotal+", ordet_importe = "+toTal2+" WHERE ord_fk ="+Globales.getInstance().idDetalle+" AND orden_det.prepro_fk="+Globales.getInstance().idProducto);
                 Cursor cursor3 = db.rawQuery("SELECT SUM(ordet_importe) as suma FROM orden_det WHERE orden_det.ord_fk ="+Globales.getInstance().idDetalle, null);
@@ -421,7 +396,6 @@ public class MostrarVentas extends AppCompatActivity implements ProductoAdapter.
                 btnMontoTotal.setText("Registrar venta \t\n\t $ " + Double.toString(totalCobrar));
                 db2.execSQL("UPDATE orden SET ord_subtotal = "+TotalVenta+", ord_total  = "+TotalVenta+" WHERE ord_id ="+Globales.getInstance().idDetalle); //bien
                 consultaSQL2();
-
             }
         }catch(Exception e){
         }
@@ -556,7 +530,6 @@ public class MostrarVentas extends AppCompatActivity implements ProductoAdapter.
         SQLiteDatabase db = conn.getReadableDatabase();
         SQLiteDatabase dbUpdate= conn.getWritableDatabase();
         Cursor cursorEstatus =db.rawQuery("SELECT * FROM estatus WHERE estatus.esta_estatus='Por pagar'",null);
-
         try {
             if (cursorEstatus != null) {
                 cursorEstatus.moveToFirst();
@@ -577,7 +550,6 @@ public class MostrarVentas extends AppCompatActivity implements ProductoAdapter.
         getMenuInflater().inflate(R.menu.menuoverflowcasita, menu);
         return super.onCreateOptionsMenu(menu);
     }
-
     public  boolean onOptionsItemSelected(MenuItem item){
         int id= item.getItemId();
         if (id==R.id.opcion1){

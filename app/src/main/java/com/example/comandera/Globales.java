@@ -3,6 +3,7 @@ package com.example.comandera;
 import android.content.Context;
 
 import com.example.comandera.modelo.ProductosDatos;
+import com.example.comandera.modelo.datosOrdenes;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -114,8 +115,6 @@ public String  cajaa2;
     public int actualiSin;
     public String idVentaPrevia;
 
-
-
     public  String idMetodo;
     public int metodoFK;
     //VENTA ANTERIOR
@@ -151,13 +150,21 @@ public String  cajaa2;
     public  int idEstatuHabilitado;
     public  String mesa_id="";
 
+    public  int idEstatusSolicitada;
+    public  int idEstatusEnProceso;
+    public  int idEstatusPorPreparar;
 
+    //Orddenes
 
-    public String estatusMesa;
-    public String existePrecio;
-    public String existeCantidad;
+    public  int preparado;
+    public  int porPagar;
+    public  int pagada;
 
+    public int regresarOrdenes=0;
 
+    public int idDeLaOrdenABuscar;
+
+    public List<datosOrdenes> listaRV = new ArrayList<datosOrdenes>();
     public String idMesa;// Solo obtiene el numero de la mesa ejemplo [2]
 
 

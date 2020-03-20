@@ -93,10 +93,6 @@ public class clasificacionSeleccionada extends AppCompatActivity {
         txtCarac.setText(nombreclasificacion);
         final String identificadorClasificacion = getIntent().getStringExtra("identificadorClasificacion");
         txtIden.setText(identificadorClasificacion);
-
-
-
-
         busqueda.setVisibility(View.VISIBLE);
         busqueda.setFocusable(false);
 
@@ -139,9 +135,6 @@ public class clasificacionSeleccionada extends AppCompatActivity {
             }
         });
 
-
-
-
         cargarCaracteristicas();
         cargarValor();
 
@@ -176,7 +169,7 @@ public class clasificacionSeleccionada extends AppCompatActivity {
             @Override
             public void afterTextChanged(Editable s) {
                 //cargarTodosLosProductos();
-                contabilizaLosProdAgreCarr();
+               sq.contabilizaLosProdAgreCarr(getApplicationContext());
             }
         });*/
 
@@ -189,7 +182,7 @@ public class clasificacionSeleccionada extends AppCompatActivity {
         spinnerlistaCaracteristica.setOnItemSelectedListener(
                 new AdapterView.OnItemSelectedListener() {
                     public void onItemSelected(AdapterView<?> spn, View v, int posicion, long id) {
-                        Toast.makeText(spn.getContext(), "Caracteristica: " + spn.getItemAtPosition(posicion).toString(), Toast.LENGTH_LONG).show();
+                       // Toast.makeText(spn.getContext(), "Caracteristica: " + spn.getItemAtPosition(posicion).toString(), Toast.LENGTH_LONG).show();
 
                         if(contador!=0) {
                              cargarProductosConCaracteristica();
@@ -203,11 +196,11 @@ public class clasificacionSeleccionada extends AppCompatActivity {
                 });
 
 
-      //  cargarProductosConCaracteristica();
+        //cargarProductosConCaracteristica();
         spinnerlistaCaracteristica.setOnItemSelectedListener(
                 new AdapterView.OnItemSelectedListener() {
                     public void onItemSelected(AdapterView<?> spn, View v, int posicion, long id) {
-                        Toast.makeText(spn.getContext(), "Caracteristica: " + spn.getItemAtPosition(posicion).toString(), Toast.LENGTH_LONG).show();
+                       // Toast.makeText(spn.getContext(), "Caracteristica: " + spn.getItemAtPosition(posicion).toString(), Toast.LENGTH_LONG).show();
 
                         if(contador!=0) {
                             cargarProductosConCaracteristica();
@@ -226,11 +219,11 @@ public class clasificacionSeleccionada extends AppCompatActivity {
                 Intent intencion2 = new Intent(getApplication(), Productos.class);
                 finish();
                 startActivity(intencion2);
-                contabilizaLosProdAgreCarr();
+               sq.contabilizaLosProdAgreCarr(getApplicationContext());
                 buscarProducto();
                 String query = busqueda.getText().toString();
                 if(query.equals("")){
-                  //  cargarClasificaciones();
+                  // cargarClasificaciones();
                     //cargarProductosTodos();
                 }
                 else {
@@ -275,18 +268,18 @@ public class clasificacionSeleccionada extends AppCompatActivity {
         });
 
 
-        contabilizaLosProdAgreCarr();
+       //sq.contabilizaLosProdAgreCarr(getApplicationContext());
 
       //  fol= findViewById(R.id.fol);
       //  doc= findViewById(R.id.fol2);
 //        fol.setText(Globales.getInstance().idFolio);
        // doc.setText(Globales.getInstance().idDocUl);
 
-
+        sq.contabilizaLosProdAgreCarr(getApplicationContext());
     }
 
     public  void  cargarCaracteristicas(){
-        contabilizaLosProdAgreCarr();
+       sq.contabilizaLosProdAgreCarr(getApplicationContext());
         String query = txtIden.getText().toString();
         SQLiteDatabase db = conn.getReadableDatabase();
         List<String> listaCaracteristica = new ArrayList<String>();
@@ -310,7 +303,7 @@ public class clasificacionSeleccionada extends AppCompatActivity {
                 }
                 else
                 {
-                    Toast.makeText(clasificacionSeleccionada.this,"No hay concidencias",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(clasificacionSeleccionada.this,"No hay concidencias6",Toast.LENGTH_SHORT).show();
                     listaCaracteristica.clear();
                     spinnerlistaCaracteristica.setAdapter(null);
                 }
@@ -323,7 +316,7 @@ public class clasificacionSeleccionada extends AppCompatActivity {
     }
 
     public  void  cargarValor(){
-        contabilizaLosProdAgreCarr();
+       sq.contabilizaLosProdAgreCarr(getApplicationContext());
         String query = txtIden.getText().toString();
         SQLiteDatabase db = conn.getReadableDatabase();
         List<String> listaValor = new ArrayList<String>();
@@ -347,7 +340,7 @@ public class clasificacionSeleccionada extends AppCompatActivity {
                 }
                 else
                 {
-                    Toast.makeText(clasificacionSeleccionada.this,"No hay concidencias",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(clasificacionSeleccionada.this,"No hay concidencias7",Toast.LENGTH_SHORT).show();
                     listaValor.clear();
                     valor.setAdapter(null);
                 }
@@ -413,142 +406,17 @@ public class clasificacionSeleccionada extends AppCompatActivity {
         return true;
     }
 
-    private void cargarClasificaciones(String clasificacion) {
-        SQLiteDatabase db = conn.getReadableDatabase();
-        List<ProductosDatos> listclientes = new ArrayList<ProductosDatos>();
-        listclientes.clear();
-            Cursor cursor2 =db.rawQuery("select * from producto WHERE clas_fk="+clasificacion+"", null);
 
-        try {
-            if (cursor2 != null) {
-                cursor2.moveToFirst();
-                Bitmap bitmap = null;
-                int index = 0;
-                while (!cursor2.isAfterLast()) {
-                    byte[] blob = cursor2.getBlob(cursor2.getColumnIndex("prd_imagen"));
-                    String clas= String.valueOf( cursor2.getString(cursor2.getColumnIndex("clas_fk")));
-                    String nombre= String.valueOf( cursor2.getString(cursor2.getColumnIndex("prd_nombre")));
-                    String id= String.valueOf( cursor2.getString(cursor2.getColumnIndex("prd_id")));
-                    ByteArrayInputStream bais = new ByteArrayInputStream(blob);
-                    bitmap = BitmapFactory.decodeStream(bais);
-                    String presentacion="";
-                    listclientes.add(new ProductosDatos(id, nombre, bitmap, clas, presentacion));
-                    index++;
-                    cursor2.moveToNext();
-                }
-                if (index != 0) {
-                    recyclerViewClasificacionProductos.setAdapter(new RecyclerViewProductos((ArrayList<ProductosDatos>) listclientes));
-                    System.out.println(" list 3    " + listclientes.toString());
-                }  else
-                {
-                    Toast.makeText(clasificacionSeleccionada.this,"No hay concidencias",Toast.LENGTH_SHORT).show();
-                    listclientes.clear();
-                    recyclerViewClasificacionProductos.setAdapter(null);
-                } }
-        }catch(Exception e){
-            Log.println(Log.ERROR,"",e.getMessage());
-        }
-    }
 
-    private void cargarProductosTodos() {
-        contabilizaLosProdAgreCarr();
-        SQLiteDatabase db = conn.getReadableDatabase();
-        ArrayList<String> arrayList = new ArrayList<>();
-        final ArrayList<ProductosDatos> listProductos = new ArrayList<ProductosDatos>();
-        listProductos.clear();
-        Cursor cursor2 =db.rawQuery("SELECT prd_id, prd_imagen, prd_nombre, prepro_precompra, crts_id,crts_nombre,  producto.clas_fk,prd_fk  FROM producto INNER JOIN clasificacion ON producto.clas_fk= clasificacion.clas_id " +
-                "INNER JOIN caracteristica ON caracteristica.clas_fk= clasificacion.clas_id INNER JOIN prest_prod ON prest_prod.prd_fk= producto.prd_id", null);
-        try {
-            if (cursor2 != null) {
-                cursor2.moveToFirst();
-                int index = 0;
-                Bitmap bitmap = null;
-                while (!cursor2.isAfterLast()) {
 
-                    byte[] blob = cursor2.getBlob(cursor2.getColumnIndex("prd_imagen"));
-                    String nombre= String.valueOf( cursor2.getString(cursor2.getColumnIndex("prd_nombre")));
-                    String precio= String.valueOf( cursor2.getString(cursor2.getColumnIndex("prepro_precompra")));
-                    String id= String.valueOf( cursor2.getString(cursor2.getColumnIndex("prd_id")));
-                    ByteArrayInputStream bais = new ByteArrayInputStream(blob);
-                    bitmap = BitmapFactory.decodeStream(bais);
-                    String presentacion="";
-                    listProductos.add(new ProductosDatos(id,nombre,bitmap, precio, presentacion));
-                    arrayList.add(nombre);
-                    index++;
-                    cursor2.moveToNext();
-                }
-                if (index != 0) {
-                    adapter = new GridAdapterProductos(this, listProductos);
-                    gridView.setAdapter(adapter);
-                }
-                else
-                {
-                    Toast.makeText(clasificacionSeleccionada.this,"No hay concidencias",Toast.LENGTH_SHORT).show();
-                    listProductos.clear();
-                    gridView.setAdapter(null);
-                }
 
-            }
-        }catch(Exception e){
-            Log.println(Log.ERROR,"",e.getMessage());
-            System.out.println("  ERROR  "+e.getMessage());
-            Toast.makeText(clasificacionSeleccionada.this,"NERROR"+e.getMessage(),Toast.LENGTH_SHORT).show();
-        }
-    }
-
-   /*
-    private void cargarProductosAlI() {
-        contabilizaLosProdAgreCarr();
-        String clasificacion = txtIden.getText().toString();
-        SQLiteDatabase db = conn.getReadableDatabase();
-        ArrayList<String> arrayList = new ArrayList<>();
-        final ArrayList<ProductosDatos> listProductos = new ArrayList<ProductosDatos>();
-        listProductos.clear();
-        Cursor cursor2 =db.rawQuery("SELECT prd_id, prd_imagen, prd_nombre, prepro_precompra, crts_id,crts_nombre,  producto.clas_fk,prd_fk  FROM producto INNER JOIN clasificacion ON producto.clas_fk= clasificacion.clas_id " +
-                "INNER JOIN caracteristica ON caracteristica.clas_fk= clasificacion.clas_id INNER JOIN prest_prod ON prest_prod.prd_fk= producto.prd_id WHERE  producto.clas_fk='"+clasificacion+"'", null);
-        try {
-            if (cursor2 != null) {
-                cursor2.moveToFirst();
-                int index = 0;
-                Bitmap bitmap = null;
-                while (!cursor2.isAfterLast()) {
-
-                    byte[] blob = cursor2.getBlob(cursor2.getColumnIndex("prd_imagen"));
-                    String nombre= String.valueOf( cursor2.getString(cursor2.getColumnIndex("prd_nombre")));
-                    String precio= String.valueOf( cursor2.getString(cursor2.getColumnIndex("prepro_precompra")));
-                    String id= String.valueOf( cursor2.getString(cursor2.getColumnIndex("prd_id")));
-                    ByteArrayInputStream bais = new ByteArrayInputStream(blob);
-                    bitmap = BitmapFactory.decodeStream(bais);
-                    listProductos.add(new ProductosDatos(id,nombre,bitmap, precio));
-                    arrayList.add(nombre);
-                    index++;
-                    cursor2.moveToNext();
-                }
-                if (index != 0) {
-                    adapter = new GridAdapterProductos(this, listProductos);
-                    gridView.setAdapter(adapter);
-                }
-                else
-                {
-                    Toast.makeText(clasificacionSeleccionada.this,"No hay concidencias",Toast.LENGTH_SHORT).show();
-                    listProductos.clear();
-                    gridView.setAdapter(null);
-                }
-            }
-        }catch(Exception e){
-            Log.println(Log.ERROR,"",e.getMessage());
-        }
-    }
-*/
    private void cargarProductosAlI() {
-       contabilizaLosProdAgreCarr();
+      sq.contabilizaLosProdAgreCarr(getApplicationContext());
        String clasificacion = txtIden.getText().toString();
        SQLiteDatabase db = conn.getReadableDatabase();
        ArrayList<String> arrayList = new ArrayList<>();
        final ArrayList<ProductosDatos> listProductos = new ArrayList<ProductosDatos>();
        listProductos.clear();
-       // Cursor cursor2 =db.rawQuery("SELECT prd_id, prd_imagen, prd_nombre, prepro_precompra, crts_id,crts_nombre,  producto.clas_fk,prd_fk  FROM producto INNER JOIN clasificacion ON producto.clas_fk= clasificacion.clas_id " +
-       //        "INNER JOIN caracteristica ON caracteristica.clas_fk= clasificacion.clas_id INNER JOIN prest_prod ON prest_prod.prd_fk= producto.prd_id WHERE  producto.clas_fk='"+clasificacion+"'", null);
        Cursor cursor2 =db.rawQuery("SELECT prepro_id, prd_imagen, prd_nombre, prepro_precompra, prst_fk, prst_descripcion \n" +
                "FROM prest_prod \n" +
                "INNER JOIN producto On producto.prd_id= prest_prod.prd_fk \n" +
@@ -561,12 +429,6 @@ public class clasificacionSeleccionada extends AppCompatActivity {
                int index = 0;
                Bitmap bitmap = null;
                while (!cursor2.isAfterLast()) {
-
-                   /* byte[] blob = cursor2.getBlob(cursor2.getColumnIndex("prd_imagen"));
-                    String nombre= String.valueOf( cursor2.getString(cursor2.getColumnIndex("prd_nombre")));
-                    String precio= String.valueOf( cursor2.getString(cursor2.getColumnIndex("prepro_precompra")));
-                    String id= String.valueOf( cursor2.getString(cursor2.getColumnIndex("prd_id")));*/
-
                    byte[] blob = cursor2.getBlob(cursor2.getColumnIndex("prd_imagen"));
                    String nombre= String.valueOf( cursor2.getString(cursor2.getColumnIndex("prd_nombre")));
                    String precio= String.valueOf( cursor2.getString(cursor2.getColumnIndex("prepro_precompra")));
@@ -586,11 +448,10 @@ public class clasificacionSeleccionada extends AppCompatActivity {
                if (index != 0) {
                    adapter = new GridAdapterProductos(getApplicationContext(), listProductos);
                    gridView.setAdapter(adapter);
-                   Toast.makeText(clasificacionSeleccionada.this,"No hay coincidencias",Toast.LENGTH_SHORT).show();
                }
                else
                {
-                   Toast.makeText(clasificacionSeleccionada.this,"No hay concidencias",Toast.LENGTH_SHORT).show();
+                   Toast.makeText(clasificacionSeleccionada.this,"No hay concidencias8",Toast.LENGTH_SHORT).show();
                    listProductos.clear();
                    gridView.setAdapter(null);
                }
@@ -602,7 +463,7 @@ public class clasificacionSeleccionada extends AppCompatActivity {
        }
    }
     private void cargarProductosConCaracteristica() {
-        contabilizaLosProdAgreCarr();
+       sq.contabilizaLosProdAgreCarr(getApplicationContext());
         String clasificacion = txtIden.getText().toString();
         String  spinnerlistaCaracteristica1;
         spinnerlistaCaracteristica1 = spinnerlistaCaracteristica.getSelectedItem().toString();
@@ -642,7 +503,7 @@ public class clasificacionSeleccionada extends AppCompatActivity {
                 }
                 else
                 {
-                    Toast.makeText(clasificacionSeleccionada.this,"No hay concidencias",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(clasificacionSeleccionada.this,"No hay concidencias9",Toast.LENGTH_SHORT).show();
                     listProductos.clear();
                     gridView.setAdapter(null);
                 }
@@ -656,7 +517,7 @@ public class clasificacionSeleccionada extends AppCompatActivity {
     }
 
     private void cargarProductosConCaracteristicaYValor() {
-        contabilizaLosProdAgreCarr();
+       sq.contabilizaLosProdAgreCarr(getApplicationContext());
         String clasificacion = txtIden.getText().toString();
         String  spinnerlistaCaracteristica1,varValor;
         spinnerlistaCaracteristica1 = spinnerlistaCaracteristica.getSelectedItem().toString();
@@ -687,8 +548,6 @@ public class clasificacionSeleccionada extends AppCompatActivity {
                     cursor2.moveToNext();
                 }
                 if (index != 0) {
-                    //adapter = new GridAdapterProductos(this, listProductos);
-                    //gridView.setAdapter(adapter);
 
                     final GridAdapterProductos adaptador = new GridAdapterProductos(this, listProductos);
                     gridView.setAdapter(adaptador);
@@ -697,7 +556,7 @@ public class clasificacionSeleccionada extends AppCompatActivity {
                 }
                 else
                 {
-                    Toast.makeText(clasificacionSeleccionada.this,"No hay concidencias",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(clasificacionSeleccionada.this,"No hay concidencias10",Toast.LENGTH_SHORT).show();
                     listProductos.clear();
                     gridView.setAdapter(null);
                 }
@@ -709,13 +568,9 @@ public class clasificacionSeleccionada extends AppCompatActivity {
     }
 
     private void buscarProducto() {
-        contabilizaLosProdAgreCarr();
+       sq.contabilizaLosProdAgreCarr(getApplicationContext());
         SQLiteDatabase db = conn.getReadableDatabase();
-        //List<ProductosDatos> listclientes = new ArrayList<ProductosDatos>();
-
         final ArrayList<ProductosDatos> listProductos = new ArrayList<ProductosDatos>();
-        // final List<ClasificacionDatos> listclientes = new ArrayList<ClasificacionDatos>();
-        //   final ArrayList<ProductosDatos> listProductos = new ArrayList<ProductosDatos>();
         String query = busqueda.getText().toString();
         System.out.println(" query nombre"+query);
         Cursor cursor2 =db.rawQuery("SELECT prepro_id, prepro_precompra, prst_descripcion, prd_nombre,prd_imagen, prd_id FROM producto INNER JOIN prest_prod ON producto.prd_id = prest_prod.prd_fk\n" +
@@ -749,7 +604,7 @@ public class clasificacionSeleccionada extends AppCompatActivity {
                 }
                 else
                 {
-                    Toast.makeText(clasificacionSeleccionada.this,"No hay concidencias",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(clasificacionSeleccionada.this,"No hay concidencias11",Toast.LENGTH_SHORT).show();
                     listProductos.clear();
                     gridView.setAdapter(null);
                 }
@@ -760,25 +615,14 @@ public class clasificacionSeleccionada extends AppCompatActivity {
         }
 
 
+
     }
 
 
     private void contabilizaLosProdAgreCarr() {
         SQLiteDatabase db = conn.getReadableDatabase();
         Globales.getInstance().listclientes.clear();
-        //sq.consultaestatus(getApplicationContext());
-        //CAMBIAR
-       // String idu=  Globales.getInstance().id_usuario;
-        String idu=  Globales.getInstance().usuario;
-       // sq.consultaEmpresaEstableCaja(getApplicationContext(),idu);
-        String est= Globales.getInstance().idEstablecimientoLau;
-       // String doc=  Globales.getInstance().idDocUl;
-        //Cursor cursor2 =db.rawQuery("select sum(docd_cantprod) as cantidadProductos FROM documento_det" , null);
-        ///Cursor cursor2 =db.rawQuery("select sum(docd_cantprod) as cantidadProductos FROM documento_det  INNER JOIN documento ON documento_det.doc_fk=documento.doc_id WHERE  doc_fk ="+doc+" and  esta_fk='4'", null);
-      // lau  Cursor cursor2 =db.rawQuery("select sum(docd_cantprod) as cantidadProductos FROM documento_det  INNER JOIN documento ON documento_det.doc_fk=documento.doc_id WHERE    esta_fk='"+Globales.getInstance().idEstatusLau+"'  and est_fk='"+est+"'", null);
-       /*LAU MODIFICADO por marilu*/
-//      Cursor cursor2 =db.rawQuery("select sum(docd_cantprod) as cantidadProductos FROM documento_det  INNER JOIN documento ON documento_det.doc_fk=documento.doc_id WHERE    esta_fk='"+Globales.getInstance().idEstatusLau+"'  and est_fk='"+est+"'", null);
-        Cursor cursor2 =db.rawQuery("select sum(ordet_cant) as cantidadProductos FROM orden_det  INNER JOIN orden ON orden_det.ord_fk=orden.ord_id  INNER JOIN mesa ON mesa.mesa_id= orden.mesa_fk WHERE    orden_det.esta_fk='1'  and mesa.est_fk='1'", null);
+       Cursor cursor2 =db.rawQuery("select sum(ordet_cant) as cantidadProductos FROM orden_det  INNER JOIN orden ON orden_det.ord_fk=orden.ord_id  INNER JOIN mesa ON mesa.mesa_id= orden.mesa_fk WHERE    orden_det.esta_fk='1'  and mesa.est_fk='1'", null);
 
         try {
             if (cursor2 != null) {
