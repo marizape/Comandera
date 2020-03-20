@@ -3,30 +3,20 @@ package com.example.comandera;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.Manifest;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.GridView;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.example.comandera.modelo.GridAdapter;
-import com.example.comandera.modelo.RuntimePermissionUtil;
 import com.example.comandera.ui.login.InicioSesion;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.ArrayList;
 public class MenuAdministrador extends AppCompatActivity {
 
@@ -68,7 +58,7 @@ public class MenuAdministrador extends AppCompatActivity {
                     startActivity(new Intent(MenuAdministrador.this, ordenes.class));
 
                 }if (selectItem.equals("Producción")){
-                    startActivity(new Intent(MenuAdministrador.this, ConfiguracionMesa.class));
+                    startActivity(new Intent(MenuAdministrador.this, ordenes_a_preparar.class));
 
                 }if (selectItem.equals("Configuración")){
                     startActivity(new Intent(MenuAdministrador.this, ConfiguracionMesa.class));

@@ -2,6 +2,7 @@ package com.example.comandera;
 
 import android.content.Context;
 
+import com.example.comandera.modelo.DatosOrdenesAPreparar;
 import com.example.comandera.modelo.ProductosDatos;
 import com.example.comandera.modelo.datosOrdenes;
 
@@ -165,6 +166,7 @@ public String  cajaa2;
     public int idDeLaOrdenABuscar;
 
     public List<datosOrdenes> listaRV = new ArrayList<datosOrdenes>();
+    public List<DatosOrdenesAPreparar> listaRVOrdenesPreparar = new ArrayList<DatosOrdenesAPreparar>();
     public String idMesa;// Solo obtiene el numero de la mesa ejemplo [2]
 
 

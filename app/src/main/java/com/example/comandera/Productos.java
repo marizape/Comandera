@@ -102,14 +102,11 @@ public class Productos extends AppCompatActivity {
         String vari= String.valueOf(Globales.getInstance().idDeLaOrdenABuscar);
         if( vari.length()!=0){
             consul.IdDeLaOrdenABuscar(getApplicationContext());
-
             String nommesa2=Globales.getInstance().idMesa;
             ocupacionmesa.setText(nommesa2);
         }
-
         layoutManager = new LinearLayoutManager(this);
         recyclerViewClasificacionProductos.setLayoutManager(layoutManager);
-
         botonTeclado.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

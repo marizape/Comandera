@@ -308,6 +308,7 @@ public class Ingresarsql extends AppCompatActivity {
         //Cursor cursor2 =db.rawQuery("select sum(docd_cantprod) as cantidadProductos FROM documento_det  INNER JOIN documento ON documento_det.doc_fk=documento.doc_id WHERE    esta_fk='"+Globales.getInstance().idEstatusLau+"' and est_fk='"+est+"'", null);
         //Cursor cursor2 = db.rawQuery("select sum(ordet_cant) as cantidadProductos FROM orden_det  INNER JOIN orden ON orden_det.ord_fk=orden.ord_id  INNER JOIN mesa ON mesa.mesa_id= orden.mesa_fk ", null);//WHERE  orden_det.esta_fk='3'        and mesa.est_fk=''
         Cursor cursor2 = db.rawQuery("select sum(ordet_cant) as cantidadProductos FROM orden_det  INNER JOIN orden ON orden_det.ord_fk=orden.ord_id  INNER JOIN mesa ON mesa.mesa_id= orden.mesa_fk WHERE ord_fk='"+ord_fk+"'", null);//WHERE  orden_det.esta_fk='3'   and mesa.est_fk=''
+
         try {
             if (cursor2 != null) {
                 cursor2.moveToFirst();

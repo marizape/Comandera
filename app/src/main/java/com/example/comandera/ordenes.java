@@ -69,8 +69,6 @@ public class ordenes extends AppCompatActivity {
         cargaTodasLasOrdenes();
 
 
-
-
         btnordennueva.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -262,8 +260,6 @@ public class ordenes extends AppCompatActivity {
                     Globales.getInstance().listaRV.clear();
                     recyclerView.setAdapter(null);
                 }
-
-
             }
         }catch(Exception e){
             Log.println(Log.ERROR,"",e.getMessage());
