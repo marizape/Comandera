@@ -75,13 +75,14 @@ public class GridAdapterProductos extends BaseAdapter  {
         conn=new ConexionSQLiteHelper(contexto);
         SQLiteDatabase db = conn.getReadableDatabase();
         String id="";
-        Cursor cursor2 =db.rawQuery("SELECT prepro_fk,docd_cantprod,doc_fk FROM documento_det WHERE prepro_fk ='"+query+"'" , null);
+      //  Cursor cursor2 =db.rawQuery("SELECT prepro_fk,docd_cantprod,doc_fk FROM documento_det WHERE prepro_fk ='"+query+"'" , null);
+        Cursor cursor2 =db.rawQuery("SELECT prepro_fk,ordet_cant,ord_fk FROM orden_det WHERE prepro_fk ='"+query+"'" , null);
         try {
             if (cursor2 != null) {
                 cursor2.moveToFirst();
                 int index = 0;
                 while (!cursor2.isAfterLast()) {
-                    Globales.getInstance().vNumDoc2= String.valueOf( cursor2.getString(cursor2.getColumnIndex("doc_fk")));
+                    Globales.getInstance().vNumDoc2= String.valueOf( cursor2.getString(cursor2.getColumnIndex("ord_fk")));
                     Globales.getInstance().vExisteP2 = "existeElProducto";
                     index++;
                     cursor2.moveToNext();
@@ -210,7 +211,7 @@ public class GridAdapterProductos extends BaseAdapter  {
             holder.botonQuitarProductoC.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-/*
+
                     /////////////////
                     ProductosDatos productos= arrayList.get(position);
                     final TextView tituloTv = finalConvertView.findViewById(R.id.nombre);
@@ -247,7 +248,7 @@ public class GridAdapterProductos extends BaseAdapter  {
                             int elem= Integer.parseInt(Globales.getInstance().elementosExistentesEnDD);
 
                             if  (elem>1){
-                                sq.ActualizarVentaEli(contexto,prepro_fk2);//elimino el producto  de la tabla detalle
+                               // sq.ActualizarVentaEli(contexto,prepro_fk2);//elimino el producto  de la tabla detalle
                             }
 
                             if(elem==1){
@@ -267,7 +268,10 @@ public class GridAdapterProductos extends BaseAdapter  {
                             System.out.println("El producto no ha sido insertado no hay necesidad de eliminar "+ docd_cantprod2);
                         }
                     }
-                    sq.contabilizaLosProdAgreCarr(contexto);*/
+                    sq.contabilizaLosProdAgreCarr(contexto);
+
+
+
                 }
             });
             convertView.setTag(holder);

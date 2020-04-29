@@ -39,6 +39,7 @@ import com.example.comandera.modelo.ProductosDatos;
 import com.example.comandera.modelo.RecyclerViewClasificacion;
 import com.example.comandera.modelo.RecyclerViewLL;
 import com.example.comandera.modelo.consultas;
+import com.example.comandera.ui.login.InicioSesion;
 
 
 import org.json.JSONArray;
@@ -404,7 +405,7 @@ public class Productos extends AppCompatActivity {
                         public void onClick(DialogInterface dialog, int which) {
                             //sq.limpiarVariablesGlobales();
                             finish();
-                            Intent intencion2 = new Intent(getApplication(), MainActivity.class);
+                            Intent intencion2 = new Intent(getApplication(), InicioSesion.class);
                             startActivity(intencion2);
                             Toast.makeText(Productos.this,"Sesión  Cerrada",Toast.LENGTH_LONG).show();
                         }
@@ -497,7 +498,7 @@ public class Productos extends AppCompatActivity {
         int estatus= Globales.getInstance().idEstatusLau;
         //cambiar
         //String idu=  Globales.getInstance().id_usuario;
-        String idu=  Globales.getInstance().usuario;
+        //String idu=  Globales.getInstance().usuario;
 
 
 //        sq.consultaEmpresaEstableCaja(getApplicationContext(),idu);

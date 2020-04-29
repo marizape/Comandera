@@ -136,8 +136,8 @@ public class consultas {
         SQLiteDatabase db = conn.getReadableDatabase();
         String usu, pass;
         int var=0, idUsu;
-
-        Cursor cursor2 =db.rawQuery("SELECT usr_id,usr_usuario, usr_password FROM usuario WHERE usr_usuario='"+usuario+"'  AND usr_password='"+contraseña+"' " , null);
+       // Cursor cursor2 =db.rawQuery("SELECT usr_id,usr_usuario, usr_password FROM usuario WHERE usr_usuario='"+usuario+"'  AND usr_password='"+contraseña+"' " , null);
+        Cursor cursor2 =db.rawQuery("SELECT usr_id,usr_usuario, usr_password FROM usuario WHERE usr_id='1' AND usr_usuario='"+usuario+"'  AND usr_password='"+contraseña+"' " , null);
 
         try {
             if (cursor2 != null) {
@@ -145,7 +145,7 @@ public class consultas {
                 int index = 0;
                 while (!cursor2.isAfterLast()) {
                     idUsu= Integer.parseInt(String.valueOf(cursor2.getColumnIndex("usr_id")));
-                    Globales.getInstance().idUsuarioL=String.valueOf( cursor2.getString(cursor2.getColumnIndex("usr_id")));
+                    Globales.getInstance().idUsuarioMesero=String.valueOf( cursor2.getString(cursor2.getColumnIndex("usr_id")));
 
                     index++;
                     cursor2.moveToNext();
@@ -153,6 +153,7 @@ public class consultas {
                 if (index != 0) {
                     //Toast.makeText(context, "Exito" , Toast.LENGTH_SHORT).show();123456
                     var=1;
+
                 }
             }
             cursor2.close();
@@ -524,7 +525,6 @@ public class consultas {
         conn = new ConexionSQLiteHelper(context);
         SQLiteDatabase db = conn.getReadableDatabase();
         int varaux=Globales.getInstance().idDeLaOrdenABuscar;
-
         Cursor cursorEstatus = db.rawQuery("SELECT ord_folio, ord_id FROM orden WHERE ord_id='"+varaux+"'", null);
         try {
             if (cursorEstatus != null) {
@@ -539,6 +539,115 @@ public class consultas {
 
     }
 
+    public void consultaEstatusEntregada(Context context) {
+        ConexionSQLiteHelper conn;
+        conn = new ConexionSQLiteHelper(context);
+        SQLiteDatabase db = conn.getReadableDatabase();
+        Cursor cursorEstatus = db.rawQuery("SELECT * FROM estatus WHERE estatus.esta_estatus='entregada'", null);
+        try {
+            if (cursorEstatus != null) {
+                cursorEstatus.moveToFirst();
+                Globales.getInstance().idEstatusEntregada = cursorEstatus.getInt(cursorEstatus.getColumnIndex("esta_id"));
+            }
+            cursorEstatus.close();
+            db.close();
+        } catch (Exception e) {
+        }
+    }
 
+    public void ModificaEstatusEntregada(Context context) {
+        ConexionSQLiteHelper conn;
+        conn = new ConexionSQLiteHelper(context);
+        SQLiteDatabase db = conn.getReadableDatabase();
+        Cursor cursorEstatus = db.rawQuery("SELECT * FROM estatus WHERE estatus.esta_estatus='entregada'", null);
+        try {
+            if (cursorEstatus != null) {
+                cursorEstatus.moveToFirst();
+                Globales.getInstance().idModificaEstatusEntregada = cursorEstatus.getInt(cursorEstatus.getColumnIndex("esta_id"));
+            }
+            cursorEstatus.close();
+            db.close();
+        } catch (Exception e) {
+        }
+    }
+
+    public  int  loginAdministrador(Context context, String usuario, String contraseña){
+
+        ConexionSQLiteHelper conn;
+        conn=new ConexionSQLiteHelper(context);
+        SQLiteDatabase db = conn.getReadableDatabase();
+        int var=0;
+
+        //Cursor cursor2 =db.rawQuery("SELECT usr_id,usr_usuario, usr_password FROM usuario WHERE usr_usuario='"+usuario+"'  AND usr_password='"+contraseña+"' " , null);
+        Cursor cursor2 =db.rawQuery("SELECT usr_id,usr_usuario, usr_password FROM usuario WHERE usr_id='3' AND usr_usuario='"+usuario+"'  AND usr_password='"+contraseña+"'" , null);
+
+        try {
+            if (cursor2 != null) {
+                cursor2.moveToFirst();
+                int index = 0;
+                while (!cursor2.isAfterLast()) {
+                    Globales.getInstance().idUsuarioAdministrador=String.valueOf( cursor2.getString(cursor2.getColumnIndex("usr_id")));
+
+                    index++;
+                    cursor2.moveToNext();
+                }
+                if (index != 0) {
+                    var=3;
+                }
+            }
+            cursor2.close();
+            db.close();
+        }catch(Exception e){
+            Log.println(Log.ERROR,"Error ",e.getMessage());
+        }
+        return  var;
+
+    }
+    public  int  loginCocinero(Context context, String usuario, String contraseña){
+
+        ConexionSQLiteHelper conn;
+        conn=new ConexionSQLiteHelper(context);
+        SQLiteDatabase db = conn.getReadableDatabase();
+        String usu, pass;
+        int var=0, idUsu;
+        //Cursor cursor2 =db.rawQuery("SELECT usr_id,usr_usuario, usr_password FROM usuario WHERE usr_usuario='"+usuarioC+"'  AND usr_password='"+contraseñaC+"' " , null);
+        Cursor cursor2 =db.rawQuery("SELECT usr_id,usr_usuario, usr_password FROM usuario WHERE usr_id='2' AND usr_usuario='"+usuario+"'  AND usr_password='"+contraseña+"' " , null);
+        try {
+            if (cursor2 != null) {
+                cursor2.moveToFirst();
+                int index = 0;
+                while (!cursor2.isAfterLast()) {
+
+                    Globales.getInstance().idUsuarioCocinero=String.valueOf( cursor2.getString(cursor2.getColumnIndex("usr_id")));
+                    index++;
+
+                    cursor2.moveToNext();
+                }
+                if (index != 0) {
+                    var=2;
+                }
+            }
+            cursor2.close();
+            db.close();
+        }catch(Exception e){
+            Log.println(Log.ERROR,"Error ",e.getMessage());
+        }
+        return  var;
+    }
+
+// hacer la funcion para actualizar el estado
+    public void actualizaEstatusEntregado(Context context){
+        ConexionSQLiteHelper conn = new ConexionSQLiteHelper(context);
+        SQLiteDatabase db = conn.getWritableDatabase();
+        consultarEstatusDesabilitado(context);
+
+        /*System.out.println(vari); Cortando la Mesa
+        String[] var2=vari.split( " ");
+        String var3=var2[1];*/
+        int aux=Globales.getInstance().idEstatu;
+        //db.execSQL("UPDATE mesa SET  esta_fk="+ Globales.getInstance().idEstatu+" WHERE mesa_num="+vari);
+        db.close();
+        //  mesa_num
+    }
 }
 

@@ -32,7 +32,6 @@ public class MenuAdministrador extends AppCompatActivity {
 
         Globales.getInstance().usuario="1";
 
-
                 ArrayList<String> arrayList = new ArrayList<>();
                 arrayList.add("Disponibilidad de mesas");
                 arrayList.add("Ordenes");
@@ -45,6 +44,7 @@ public class MenuAdministrador extends AppCompatActivity {
                 adapter = new GridAdapter(this,images, arrayList);
                 gridView = (GridView) findViewById(R.id.menuadmi);
                 gridView.setAdapter(adapter);
+
 
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override

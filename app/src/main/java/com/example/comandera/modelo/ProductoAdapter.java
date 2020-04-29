@@ -43,17 +43,15 @@ public class ProductoAdapter extends RecyclerView.Adapter<ProductoAdapter.Palett
         void onItemClickMenos(Productoss productos);
         void cambiacant(String cadena, int posicion);
         void elimi(int posicion);
-
         void aumentar(int posicion);
         void disminuir(int posicion);
+        //void cantidad();
     }
 
     public ProductoAdapter(MiListener l, ArrayList<Productoss> p) {
         listener = l;
         productos = p;
     }
-
-
     public ProductoAdapter(@NonNull ArrayList<Productoss> productos) { this.productos = productos; }
 
     @NonNull
@@ -126,6 +124,7 @@ public class ProductoAdapter extends RecyclerView.Adapter<ProductoAdapter.Palett
             if (productos.cantidad<=0){
                 cantEdit.setTextColor(Color.parseColor("#F48D12"));
             }
+
             else
             {
                 cantEdit.setTextColor(Color.parseColor("#F48D12"));
@@ -211,9 +210,6 @@ public class ProductoAdapter extends RecyclerView.Adapter<ProductoAdapter.Palett
         }
     }
 
-
-
-
     private void AlertComentarios(final Context context) {
         LayoutInflater aceptarCancelacion = LayoutInflater.from(context);
         View prompstsCancelacion = aceptarCancelacion.inflate(R.layout.comentarios, null);
@@ -221,7 +217,6 @@ public class ProductoAdapter extends RecyclerView.Adapter<ProductoAdapter.Palett
         builderCancel.setView(prompstsCancelacion);
         builderCancel.setCancelable(false);
         builderCancel.setTitle("Escriba un comentario que desea agregar o quitar en su producto");
-
         // final  Button aceptarCancel = (Button)prompstsCancelacion.findViewById(R.id.btnCancel);
         //  final ImageButton cerrarv = prompstsCancelacion.findViewById(R.id.cerrarCanc);
 

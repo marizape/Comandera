@@ -33,6 +33,7 @@ import com.example.comandera.modelo.GridAdapterProductos;
 import com.example.comandera.modelo.Ingresarsql;
 import com.example.comandera.modelo.ProductosDatos;
 import com.example.comandera.modelo.RecyclerViewProductos;
+import com.example.comandera.ui.login.InicioSesion;
 
 
 import java.io.ByteArrayInputStream;
@@ -137,6 +138,7 @@ public class clasificacionSeleccionada extends AppCompatActivity {
 
         cargarCaracteristicas();
         cargarValor();
+
 
     /*    spinnerlistaCaracteristica.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 
@@ -373,7 +375,7 @@ public class clasificacionSeleccionada extends AppCompatActivity {
 
 
                             finish();
-                            Intent intencion2 = new Intent(getApplication(), MainActivity.class);
+                            Intent intencion2 = new Intent(getApplication(), InicioSesion.class);
                             startActivity(intencion2);
                             Toast.makeText(clasificacionSeleccionada.this,"Sesión  Cerrada",Toast.LENGTH_LONG).show();
                         }

@@ -57,7 +57,6 @@ public class MostrarVentas extends AppCompatActivity implements ProductoAdapter.
     Parcelable recyclerViewState;
     String nuevaVari="";
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -84,6 +83,7 @@ public class MostrarVentas extends AppCompatActivity implements ProductoAdapter.
             @Override
            public void onClick(View v) {
                 // Envia los productos en la tabla ordenes
+                Globales.getInstance().idOrden="";
                 String folio=Globales.getInstance().folioEnviar;
                 consul.actualizarEstadoOrden(folio,getApplicationContext());//estado por preprar
                 Intent btnenviarOrden = new Intent(MostrarVentas.this, ordenes.class);
@@ -553,7 +553,7 @@ public class MostrarVentas extends AppCompatActivity implements ProductoAdapter.
     public  boolean onOptionsItemSelected(MenuItem item){
         int id= item.getItemId();
         if (id==R.id.opcion1){
-            Intent intencion2 = new Intent(getApplication(), Productos.class);
+            Intent intencion2 = new Intent(getApplication(), MenuAdministrador.class);
             startActivity(intencion2);
         }
         if (id== R.id.opcion2){

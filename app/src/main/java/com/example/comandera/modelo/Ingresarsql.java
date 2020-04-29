@@ -275,7 +275,6 @@ public class Ingresarsql extends AppCompatActivity {
                         } else {
                             Globales.getInstance().vFolio = "noExisteElFol";
                         }
-
                         index++;
                         cursor2.moveToNext();
                     }
@@ -383,14 +382,16 @@ public class Ingresarsql extends AppCompatActivity {
             Double precioUnitario = Double.valueOf(docd_precven);
             Double totalPrevio = cantidad * precioUnitario;
 
-            db.execSQL("UPDATE documento_det SET docd_cantprod=" + docd_cantprod + ",docd_precven=" + totalPrevio + " WHERE prd_fk=" + prd_fk + " and doc_fk =" + doc);
+           // db.execSQL("UPDATE documento_det SET docd_cantprod=" + docd_cantprod + ",docd_precven=" + totalPrevio + " WHERE prd_fk=" + prd_fk + " and doc_fk =" + doc);
+            db.execSQL("UPDATE orden_det SET ordet_cant" + docd_cantprod + ",docd_precven=" + totalPrevio + " WHERE prd_fk=" + prd_fk + " and doc_fk =" + doc);
 
 
             Double TotalVenta = 0.0;
-            Cursor cursor3 = db.rawQuery("SELECT SUM(docd_precven) as suma FROM documento_det WHERE documento_det.doc_fk = " + doc, null);
+            //Cursor cursor3 = db.rawQuery("SELECT SUM(docd_precven) as suma FROM documento_det WHERE documento_det.doc_fk = " + doc, null);
+            Cursor cursor3 = db.rawQuery("SELECT SUM(ordet_importe) as suma FROM orden_det WHERE orden_det.ord_fk = " + doc, null);
             cursor3.moveToFirst();
             TotalVenta = Double.parseDouble(cursor3.getString(cursor3.getColumnIndex("suma")));
-            db.execSQL("UPDATE documento SET doc_subtotal=" + TotalVenta + ",doc_total=" + TotalVenta + " WHERE doc_id=" + doc);
+            db.execSQL("UPDATE orden SET ord_subtotal=" + TotalVenta + ",doc_total=" + TotalVenta + " WHERE ord_id=" + doc);
 
             db.close();
             cursor3.close();
@@ -431,15 +432,19 @@ public class Ingresarsql extends AppCompatActivity {
         SQLiteDatabase db = conn.getWritableDatabase();
         existeD(contexto, prd_fk);
         if (Globales.getInstance().vExisteP.equals("existeElProducto")) {
-            Cursor cursorC = db.rawQuery("DELETE FROM documento_det WHERE documento_det.doc_fk = " + doc_id, null);
+         /*   Cursor cursorC = db.rawQuery("DELETE FROM documento_det WHERE documento_det.doc_fk = " + doc_id, null);
             Cursor cursorC2 = db.rawQuery("DELETE FROM folio WHERE fol_folio IN (SELECT fol_folio FROM folio fol INNER JOIN documento doc ON (fol.fol_folio=doc.doc_folio ) WHERE doc.doc_id =" + doc_id + ")", null);
-            Cursor cursorC3 = db.rawQuery("DELETE FROM documento WHERE documento.doc_id= " + doc_id, null);
+            Cursor cursorC3 = db.rawQuery("DELETE FROM documento WHERE documento.doc_id= " + doc_id, null);*/
+
+         Cursor cursorC = db.rawQuery("DELETE FROM orden_det WHERE orden_det.ord_fk =" + doc_id, null);
+         //   Cursor cursorC2 = db.rawQuery("DELETE FROM folio WHERE fol_folio IN (SELECT fol_folio FROM folio fol INNER JOIN documento doc ON (fol.fol_folio=doc.doc_folio ) WHERE doc.doc_id =" + doc_id + ")", null);
+            Cursor cursorC3 = db.rawQuery("DELETE FROM orden WHERE orden.ord_id=" + doc_id, null);
             cursorC.moveToFirst();
-            cursorC2.moveToFirst();
+        //    cursorC2.moveToFirst();
             cursorC3.moveToFirst();
             db.close();
             cursorC.close();
-            cursorC2.close();
+        //    cursorC2.close();
             cursorC3.close();
             contabilizaLosProdAgreCarr(contexto);
 

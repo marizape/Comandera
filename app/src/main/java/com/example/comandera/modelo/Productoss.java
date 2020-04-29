@@ -13,8 +13,6 @@ public class Productoss {
     public String comentariosP;
 
 
-
-
     public String getComentariosP() {
         return comentariosP;
     }

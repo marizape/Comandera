@@ -96,7 +96,7 @@
             android:layout_gravity="center"
             android:background="@color/colorPrimary"
             android:gravity="center"
-            android:text="Nueva oreden"
+            android:text="Nueva orden"
             android:textColor="@android:color/white"
             android:textSize="20sp"
 

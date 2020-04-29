@@ -150,7 +150,7 @@ consultas consul= new consultas();
                          }
                      }
                  }
-                 Toast.makeText(MainActivity.this,"Datos Almacenados",Toast.LENGTH_LONG).show();
+                 Toast.makeText(MainActivity.this,"Datos guardados correctamente",Toast.LENGTH_LONG).show();
              }
         });
     }

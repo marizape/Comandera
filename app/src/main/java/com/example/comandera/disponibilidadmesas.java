@@ -87,7 +87,7 @@ public class disponibilidadmesas extends AppCompatActivity {
                 startActivity(btncuenta);
             }
         });
-//        int num=Integer.parseInt(Globales.getInstance().numeroM);
+//      int num=Integer.parseInt(Globales.getInstance().numeroM);
         recyclerView = findViewById(R.id.RecyclerView);
         recyclerView.setHasFixedSize(true);
         layoutManager = new LinearLayoutManager(this);

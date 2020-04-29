@@ -10,7 +10,9 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.GridView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.comandera.modelo.GridAdapter;
@@ -34,6 +36,18 @@ public class MenuCocinero extends AppCompatActivity {
         gridView = (GridView) findViewById(R.id.menucosinero);
         gridView.setAdapter(adapter);
        // gridView.setAccessibilityLiveRegion(adapter);
+
+        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                TextView nombreProducto = view.findViewById(R.id.ig_tv_titulo);
+                selectItem = nombreProducto.getText().toString();
+                if (selectItem.equals("Producción")){
+                    startActivity(new Intent(MenuCocinero.this, ordenes_a_preparar.class));
+                    finish();
+                }
+            }
+        });
     }
     public boolean onCreateOptionsMenu(Menu menu){
         getMenuInflater().inflate(R.menu.menuoverflow, menu);

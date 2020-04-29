@@ -44,7 +44,7 @@
         android:hint="Correo electrónico"
         android:inputType="textEmailAddress"
         android:selectAllOnFocus="true"
-        android:text="mesero@hotmail.com"
+        android:text="administrador@hotmail.com"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"

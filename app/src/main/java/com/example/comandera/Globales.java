@@ -137,7 +137,7 @@ public String  cajaa2;
 
 
     /////variables marilu
-    public String  idUsuarioL;
+    public String  idUsuarioMesero;
     public  int IdEstablecimiento;
     public int IdEstatusMa;
     public  int numeroInicio;
@@ -154,6 +154,8 @@ public String  cajaa2;
     public  int idEstatusSolicitada;
     public  int idEstatusEnProceso;
     public  int idEstatusPorPreparar;
+    public int idEstatusEntregada;
+    public int idModificaEstatusEntregada;
 
     //Orddenes
 
@@ -164,6 +166,18 @@ public String  cajaa2;
     public int regresarOrdenes=0;
 
     public int idDeLaOrdenABuscar;
+    public String tipoDeUsuarios;
+
+    public int regresaMenuAdministrador;
+    public int regresaMenuCocinero;
+    public int regresaMenuMesero;
+
+
+    public String  idUsuarioCocinero;
+    public String  idUsuarioAdministrador;
+
+
+
 
     public List<datosOrdenes> listaRV = new ArrayList<datosOrdenes>();
     public List<DatosOrdenesAPreparar> listaRVOrdenesPreparar = new ArrayList<DatosOrdenesAPreparar>();

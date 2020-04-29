@@ -3,7 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:icon="@drawable/home2"
+        android:icon="@drawable/home3"
         android:id="@+id/opcion3"
         android:title="home mesero"
         app:showAsAction="ifRoom" />

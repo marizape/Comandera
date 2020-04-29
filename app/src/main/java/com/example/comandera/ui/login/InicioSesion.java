@@ -63,37 +63,26 @@ public class InicioSesion extends AppCompatActivity {
         final EditText usuario = findViewById(R.id.username);
         final EditText pass = findViewById(R.id.password);
          loginButton= findViewById(R.id.login);
-
-
      /*   usernameEditText.setText("Administrador@hotmail.com");
         passwordEditText.setText("123456");*/
-
-
-
-
-
-
 
 
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                String usu= usuario.getText().toString();
-                String pas= pass.getText().toString();
-
-                IniciarSesion(getApplicationContext(),usu,pas);
-
+                if(usuario.getText().toString().length()!=0) {
+                    String usu = usuario.getText().toString();
+                    String pas = pass.getText().toString();
+                    IniciarSesion(getApplicationContext(), usu, pas);
+                    IniciarSesionCocinero(getApplicationContext(), usu, pas);
+                    IniciarSesionAdministrador(getApplicationContext(), usu, pas);
+                }else {
+                    //Toast.makeText(InicioSesion.this, "Lo sentimos, usted no tiene acceso", Toast.LENGTH_SHORT).show();
+                }
 
             }
         });
-
-
-
-
-
-
-
 
 /*
         loginViewModel.getLoginFormState().observe(this, new Observer<LoginFormState>() {
@@ -200,24 +189,55 @@ public class InicioSesion extends AppCompatActivity {
                 }
             }
         });*/
+////////////////////
+    }
+    public void IniciarSesion(Context context,String email, String password){
+        int var,variCocinero;
+        var= c.loginM(context, email, password);
+       // variCocinero=c.loginCocinero(context,email,password);
+        if(var==1){
+            //startActivity(new Intent(InicioSesion.this, MenuAdministrador.class));
+            startActivity(new Intent(InicioSesion.this, MenuMesero.class));
+        }
+        /*if(var==2){
+            startActivity(new Intent(InicioSesion.this, MenuMesero.class));
+        }if(var==3){
+            startActivity(new Intent(InicioSesion.this, MenuCocinero.class));
+        }*/
+        else {
+        //   Toast.makeText(InicioSesion.this, "Lo sentimos, usted no tiene acceso", Toast.LENGTH_SHORT).show();
+        }
+
+       /* if(variCocinero==2){
+            startActivity(new Intent(InicioSesion.this, MenuCocinero.class));
+        }
+        else {
+            Toast.makeText(InicioSesion.this, "Lo sentimos, usted no tiene acceso", Toast.LENGTH_SHORT).show();
+        }*/
+
     }
 
+    public void IniciarSesionCocinero(Context context,String email, String password){
+        int variCocinero;
+        variCocinero=c.loginCocinero(context,email,password);
+        if(variCocinero==2){
+            startActivity(new Intent(InicioSesion.this, MenuCocinero.class));
+        }
+        else {
+           // Toast.makeText(InicioSesion.this, "Lo sentimos, usted no tiene acceso", Toast.LENGTH_SHORT).show();
+        }
+    }
 
-    public void IniciarSesion(Context context,String email, String password){
-
-        int var;
-        var= c.loginM(context, email, password);
-        if(var==1){
-
+    public void IniciarSesionAdministrador(Context context,String email, String password){
+        int variMesero;
+        variMesero=c.loginAdministrador(context,email,password);
+        if(variMesero==3){
             startActivity(new Intent(InicioSesion.this, MenuAdministrador.class));
         }
         else {
-
-           Toast.makeText(InicioSesion.this, "Lo sentimos, usted no tiene acceso", Toast.LENGTH_SHORT).show();
+          // Toast.makeText(InicioSesion.this, "Lo sentimos, usted no tiene acceso", Toast.LENGTH_SHORT).show();
         }
     }
-
-
 
 
 

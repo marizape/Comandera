@@ -144,7 +144,6 @@ public class ordenes extends AppCompatActivity {
             startActivity(intencion2);
             //  Toast.makeText(ConfiguracionMesa.this,"Bienvenido !",Toast.LENGTH_LONG).show();
         }
-
         if (id==R.id.opcion3){
             Intent intencion2 = new Intent(getApplication(), MenuMesero.class);
             startActivity(intencion2);
